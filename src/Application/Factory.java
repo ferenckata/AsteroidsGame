@@ -1,7 +1,7 @@
 package src.Application;
 
-import src.Asteroids;
 import src.Domain.*;
+import src.Domain.GameObjects.*;
 
 public class Factory {
 

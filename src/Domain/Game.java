@@ -1,7 +1,8 @@
 package src.Domain;
 
 import src.Application.Sound;
-import src.Asteroids;
+import src.Domain.Data.GameData;
+import src.Domain.GameObjects.*;
 
 import static src.Domain.GameProperties.*;
 
@@ -13,26 +14,31 @@ public class Game {
     private boolean playing;
     private boolean sound;
     private boolean detail;
+    private int photoIndex;
 
     private Sound gameSound;
 
     // Sprite objects.
 
-    private Ship   ship;
-    private UFO   ufo;
-    private Missile  missle;
-    private Photon[] photons    = new Photon[MAX_SHOTS];
-    private Asteroid[] asteroids  = new Asteroid[MAX_ROCKS];
-    private Explosion[] explosions = new Explosion[MAX_SCRAP];
-
+    private Ship myShip;
+    private UFO myUfo;
+    private Missile myMissile;
+    private Photon[] myPhotons;
+    private Asteroid[] myAsteroids;
+    private Explosion[] myExplosions;
     private GameData myGameData;
-
+    private GameProperties myGameProperties;
 
     public Game(int highScore, boolean sound, boolean detail){
         setMyGameData(GameData.getMyInstance());
         getMyGameData().setHighScore(highScore);
         this.setSound(sound);
         this.setDetail(detail);
+        myGameProperties = GameProperties.getInstance();
+        myPhotons = new Photon[myGameProperties.getMaxShots()];
+        myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
+        myExplosions = new Explosion[myGameProperties.getMaxScrap()];
+
     }
 
 
@@ -69,52 +75,52 @@ public class Game {
         this.detail = detail;
     }
 
-    public Ship getShip() {
-        return ship;
+    public Ship getMyShip() {
+        return myShip;
     }
 
-    public void setShip(Ship ship) {
-        this.ship = ship;
+    public void setMyShip(Ship myShip) {
+        this.myShip = myShip;
     }
 
-    public UFO getUfo() {
-        return ufo;
+    public UFO getMyUfo() {
+        return myUfo;
     }
 
-    public void setUfo(UFO ufo) {
-        this.ufo = ufo;
+    public void setMyUfo(UFO myUfo) {
+        this.myUfo = myUfo;
     }
 
-    public Missile getMissle() {
-        return missle;
+    public Missile getMyMissile() {
+        return myMissile;
     }
 
-    public void setMissle(Missile missle) {
-        this.missle = missle;
+    public void setMyMissile(Missile myMissile) {
+        this.myMissile = myMissile;
     }
 
-    public Photon[] getPhotons() {
-        return photons;
+    public Photon[] getMyPhotons() {
+        return myPhotons;
     }
 
-    public void setPhotons(Photon[] photons) {
-        this.photons = photons;
+    public void setMyPhotons(Photon[] myPhotons) {
+        this.myPhotons = myPhotons;
     }
 
-    public Asteroid[] getAsteroids() {
-        return asteroids;
+    public Asteroid[] getMyAsteroids() {
+        return myAsteroids;
     }
 
-    public void setAsteroids(Asteroid[] asteroids) {
-        this.asteroids = asteroids;
+    public void setMyAsteroids(Asteroid[] myAsteroids) {
+        this.myAsteroids = myAsteroids;
     }
 
-    public Explosion[] getExplosions() {
-        return explosions;
+    public Explosion[] getMyExplosions() {
+        return myExplosions;
     }
 
-    public void setExplosions(Explosion[] explosions) {
-        this.explosions = explosions;
+    public void setMyExplosions(Explosion[] myExplosions) {
+        this.myExplosions = myExplosions;
     }
 
     public GameData getMyGameData() {
@@ -125,7 +131,7 @@ public class Game {
         this.myGameData = myGameData;
     }
 
-    public void initGame(Ship ship) {
+    public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions) {
 
         // Initialize game data and sprites.
 
@@ -135,14 +141,16 @@ public class Game {
         myGameData.setNewShipScore(NEW_SHIP_POINTS);
         myGameData.setNewUfoScore(NEW_UFO_POINTS);
 
-        this.ship = ship;
-        this.ship.initShip();
+        this.myShip = ship;
+        myShip.init();
 
         myGameData.setHyperCounter(0);
 
+        this.myPhotons = photons;
         initPhotons();
+
         stopUfo();
-        stopMissle();
+        stopMissile();
         initAsteroids();
         initExplosions();
         playing = true;
@@ -150,14 +158,37 @@ public class Game {
         myGameData.setPhotonTime(System.currentTimeMillis());
     }
 
+
     public void endGame() {
 
-        // Stop ship, flying saucer, guided missle and associated sounds.
+        // Stop myShip, flying saucer, guided myMissile and associated sounds.
 
         playing = false;
         stopShip();
         stopUfo();
-        stopMissle();
+        stopMissile();
+    }
+
+    private void initExplosions() {
+    }
+
+    private void initAsteroids() {
+    }
+
+    private void stopMissile() {
+    }
+
+    private void stopUfo() {
+    }
+
+    private void initPhotons() {
+        for (Photon photon: myPhotons) {
+            photon.init();
+            photoIndex = 0;
+        }
+    }
+
+    private void stopShip() {
     }
 
 
@@ -177,10 +208,49 @@ public class Game {
 
     public void getUFO() {
 
-        if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !ufo.active) {
+        if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !myUfo.isActive()) {
             myGameData.setNewUfoScore( myGameData.getNewUfoScore() + NEW_UFO_POINTS);
             myGameData.setUfoPassesLeft(UFO_PASSES);
-            initUfo();
+            myUfo.initUfo();
         }
     }
+
+    private void initUfo() {
+    }
+
+    public void updateGame() {
+
+
+        if (!playing){
+            return;
+        }
+
+        myShip.update();
+        updateShip();
+        updatePhotons();
+        updateUfo();
+        updateMissile();
+        updateAsteroids();
+        updateExplosions();
+
+    }
+
+    private void updateExplosions() {
+    }
+
+    private void updateAsteroids() {
+    }
+
+    private void updateMissile() {
+    }
+
+    private void updateUfo() {
+    }
+
+    private void updatePhotons() {
+    }
+
+    public void updateShip() {
+    }
+
 }

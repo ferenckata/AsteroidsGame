@@ -1,4 +1,4 @@
-package src.Domain;
+package src.Domain.Data;
 
 import java.awt.*;
 

@@ -1,46 +1,59 @@
 package src.Application;
 
-import src.Asteroids;
 import src.Domain.*;
+import src.Domain.GameObjects.*;
+import src.UI.StartScreen;
+
+import javax.sound.sampled.AudioSystem;
+import java.io.File;
 
 public class GameHandler {
 
-    private boolean loaded = false;
-
+    private boolean isSoundLoaded = false;
     private Factory myFactory;
     private GameProperties myGameProperties;
     private Game myGame;
+    private Sound myGameSound;
+    private StartScreen myStartScreen;
+    private static GameHandler myInstance;
 
     private UFO myUFO;
     private Ship myShip;
     private Missile myMissile;
-    private Photon[] photons;
-    private Asteroid[] asteroids;
-    private Explosion[] explosions;
+    private Photon[] myPhotons;
+    private Asteroid[] myAsteroids;
+    private Explosion[] myExplosions;
 
-    public GameHandler(){
+    private GameHandler(){
         this.myGameProperties = GameProperties.getInstance();
         this.myFactory = Factory.getInstance();
+        this.myStartScreen = StartScreen.getInstance();
     }
 
-    public boolean isLoaded() {
-        return loaded;
+    public static GameHandler getInstance() {
+        if (myInstance == null){
+            myInstance = new GameHandler();
+        }
+        return myInstance;
     }
 
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
+    public boolean isSoundLoaded() {
+        return isSoundLoaded;
     }
 
-    public boolean createGameObjects(){
+    public void setSoundLoaded(boolean soundLoaded) {
+        this.isSoundLoaded = soundLoaded;
+    }
+
+    public void createGameObjects(){
 
         myUFO = myFactory.createUFO();
         myShip = myFactory.createShip();
         myMissile = myFactory.createMissile();
-        photons = myFactory.createPhotons(myGameProperties.getMaxShots());
-        asteroids = myFactory.createAsteroids(myGameProperties.getMaxRocks());
-        explosions = myFactory.createExplosions(myGameProperties.getMaxScrap());
+        myPhotons = myFactory.createPhotons(myGameProperties.getMaxShots());
+        myAsteroids = myFactory.createAsteroids(myGameProperties.getMaxRocks());
+        myExplosions = myFactory.createExplosions(myGameProperties.getMaxScrap());
 
-        return true;
     }
 
     public void createNewGame() {
@@ -50,20 +63,68 @@ public class GameHandler {
         boolean detail = true;
 
         myGame = myFactory.createGame(highScore,sound,detail);
-        Sound gameSound = myFactory.createGameSound();
+        myGameSound = myFactory.createGameSound();
 
-        myGame.initGame(myShip);
+        myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions);
 
-        if (loaded)
-            gameSound.stopThrustersSound();
-        gameSound.setThrustersPlaying(false);
-
-        endGame();
+        if (isSoundLoaded){
+            myGameSound.stopThrustersSound();
+            myGameSound.setThrustersPlaying(false);
+        }
+        myGame.endGame();
 
     }
 
 
-    public void loadSounds() {
+    public void loadSounds(int delay) {
+
+        // Load all sound clips by playing and immediately stopping them. Update
+        // counter and total for display.
+
+        try {
+            myGameSound.loadSound("Crash");
+            myGameSound.loadSound("Explosion");
+            myGameSound.loadSound("Fire");
+            myGameSound.loadSound("Missile");
+            myGameSound.loadSound("Saucer");
+            myGameSound.loadSound("Thrusters");
+            myGameSound.loadSound("Warp");
+        } catch (Exception e) {
+            System.out.println("Could not load sounds");
+        }
+
+        try {
+            myGameSound.runSound("Crash");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Explosion");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Fire");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Missile");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Saucer");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Thrusters");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+
+            myGameSound.runSound("Warp");
+            myStartScreen.repaint();
+            Thread.sleep(delay);
+        }
+        catch (InterruptedException e) {
+            System.out.println("Could not run sounds");
+        }
 
     }
 
@@ -72,26 +133,17 @@ public class GameHandler {
 
             // Move and process all sprites.
 
-            updateShip();
-            updatePhotons();
-            updateUfo();
-            updateMissle();
-            updateAsteroids();
-            updateExplosions();
+            myGame.updateGame();
+
 
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
             myGame.evaluateHighScore();
-
             myGame.rewardShip();
-
             myGame.getUFO();
 
-
-
-            // If all asteroids have been destroyed create a new batch.
-
+            // If all myAsteroids have been destroyed create a new batch.
             if (asteroidsLeft <= 0)
                 if (--asteroidsCounter <= 0)
                     initAsteroids();

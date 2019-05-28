@@ -1,4 +1,4 @@
-package src.Domain;
+package src.Domain.GameObjects;
 
 import java.awt.*;
 
@@ -8,15 +8,24 @@ public class Background {
 
     private int width;          // Dimensions of the graphics area.
     private int height;
-
-
     // Background stars.
+    private static Background myInstance;
 
     private int     numStars;
     private Point[] stars;
 
     // getters and setters
 
+    private Background(){
+
+    }
+
+    public static Background getInstance(){
+        if (myInstance == null){
+            myInstance = new Background();
+        }
+        return myInstance;
+    }
 
     public int getWidth() {
         return width;

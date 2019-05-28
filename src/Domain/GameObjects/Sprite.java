@@ -1,16 +1,16 @@
-package src.Domain;
+package src.Domain.GameObjects;
 
 import java.awt.*;
 
 /******************************************************************************
- The src.Domain.Sprite class defines a game object, including it's shape,
+ The src.Domain.GameObjects.Sprite class defines a game object, including it's shape,
  position, movement and rotation. It also can detemine if two objects collide.
  ******************************************************************************/
 
 public abstract class Sprite {
 
     protected Polygon shape;             // Base sprite shape, centered at the origin (0,0).
-    protected boolean active;            // Active flag.
+    protected boolean isActive;            // Active flag.
     protected double  angle;             // Current angle of rotation.
     protected double  deltaAngle;        // Amount to change the rotation angle.
     protected double  x, y;              // Current position on screen.
@@ -29,7 +29,7 @@ public abstract class Sprite {
     public Sprite(int width, int height) {
 
         this.shape = new Polygon();
-        this.active = false;
+        this.isActive = false;
         this.angle = 0.0;
         this.deltaAngle = 0.0;
         this.x = 0.0;
@@ -42,6 +42,12 @@ public abstract class Sprite {
 
     }
 
+    public abstract void init();
+
+    public abstract void update();
+
+    public abstract void stop();
+
     // getters and setters
 
     public Polygon getShape() {
@@ -53,11 +59,11 @@ public abstract class Sprite {
     }
 
     public boolean isActive() {
-        return active;
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.isActive = active;
     }
 
     public double getAngle() {

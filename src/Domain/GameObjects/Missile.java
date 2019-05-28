@@ -1,4 +1,4 @@
-package src.Domain;
+package src.Domain.GameObjects;
 
 public class Missile extends Sprite {
 

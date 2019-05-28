@@ -1,6 +1,6 @@
 package src.UI;
 
-import src.Domain.FontData;
+import src.Domain.Data.FontData;
 
 import javax.swing.*;
 import java.awt.*;

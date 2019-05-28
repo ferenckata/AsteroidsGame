@@ -6,7 +6,8 @@ public class GameProperties {
 
     private static GameProperties myInstance;
 
-    private GameProperties(){};
+    private GameProperties(){
+    }
 
     public static GameProperties getInstance(){
 
@@ -17,15 +18,14 @@ public class GameProperties {
         return myInstance;
     }
 
-    static final int MAX_SHOTS =  8;          // Maximum number of sprites
-    static final int MAX_ROCKS =  8;          // for photons, asteroids and
-    static final int MAX_SCRAP = 40;          // explosions.
+    private final int MAX_SHOTS =  8;          // Maximum number of sprites
+    private final int MAX_ROCKS =  8;          // for photons, asteroids and
+    private final int MAX_SCRAP = 40;          // explosions.
 
     static final int MAX_SHIPS = 3;           // Starting number of ships for
     // each game.
     static final int UFO_PASSES = 3;          // Number of passes for flying
     // saucer per appearance.
-
 
     static final int    MIN_ROCK_SIDES =   6; // Ranges for asteroid shape, size
     static final int    MAX_ROCK_SIDES =  16; // speed and rotation.
@@ -45,8 +45,6 @@ public class GameProperties {
     // (other conditions must be met).
 
     static final double MISSLE_PROBABILITY = 0.45 / FPS;
-
-
     static final int FIRE_DELAY = 50;         // Minimum number of milliseconds
     // required between photon shots.
 
@@ -61,15 +59,15 @@ public class GameProperties {
     static final int NEW_SHIP_POINTS = 5000;
     static final int NEW_UFO_POINTS  = 2750;
 
-    public static int getMaxShots() {
+    public int getMaxShots() {
         return MAX_SHOTS;
     }
 
-    public static int getMaxRocks() {
+    public int getMaxRocks() {
         return MAX_ROCKS;
     }
 
-    public static int getMaxScrap() {
+    public int getMaxScrap() {
         return MAX_SCRAP;
     }
 }

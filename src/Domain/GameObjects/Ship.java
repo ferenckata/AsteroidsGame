@@ -1,4 +1,4 @@
-package src.Domain;
+package src.Domain.GameObjects;
 
 public class Ship extends Sprite{
 
@@ -9,19 +9,11 @@ public class Ship extends Sprite{
         super(width,height);
     }
 
-    public void setFwdThruster(Thruster fwdThruster) {
-        this.fwdThruster = fwdThruster;
-    }
-
-    public void setRevThruster(Thruster revThruster) {
-        this.revThruster = revThruster;
-    }
-
-    public void initShip() {
-
+    @Override
+    public void init() {
         // Reset the ship sprite at the center of the screen.
 
-        this.active = true;
+        this.isActive = true;
         this.angle = 0.0;
         this.deltaAngle = 0.0;
         this.x = 0.0;
@@ -40,5 +32,26 @@ public class Ship extends Sprite{
         revThruster.y = this.y;
         revThruster.angle = this.angle;
         revThruster.render();
+    }
+
+    @Override
+    public void update() {
+
+        double dx, dy, speed;
+
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    public void setFwdThruster(Thruster fwdThruster) {
+        this.fwdThruster = fwdThruster;
+    }
+
+    public void setRevThruster(Thruster revThruster) {
+        this.revThruster = revThruster;
     }
 }

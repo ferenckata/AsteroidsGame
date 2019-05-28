@@ -1,17 +1,11 @@
 package src;
 
-import src.Application.Factory;
 import src.Application.GameHandler;
-import src.Domain.Background;
-import src.Domain.Missile;
-import src.Domain.Photon;
-import src.Domain.Sprite;
+import src.Domain.GameObjects.Background;
 import src.UI.InputOutput;
-import src.UI.Screen;
 import src.UI.StartScreen;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -28,17 +22,17 @@ public class Main implements Runnable{
     private String copyText = copyName + '\n' + copyVers + '\n'
             + copyInfo + '\n' + copyLink;
 
+    static final int DELAY = 20;
+
     // Thread control variables.
 
     private Thread loadThread;
     private Thread loopThread;
 
-    // creators
-    private GameHandler myGameHandler = new GameHandler();
-    private static Background myBackground = new Background();
-    private static StartScreen myStartScreen = new StartScreen(myBackground);
-    private static InputOutput myInputOutput = new InputOutput();
-
+    private GameHandler myGameHandler;
+    private Background myBackground;
+    private StartScreen myStartScreen;
+    private InputOutput myInputOutput;
 
     public String getAppletInfo() {
 
@@ -49,12 +43,17 @@ public class Main implements Runnable{
 
     public void init() {
 
+        //Creators
+        myGameHandler = GameHandler.getInstance();
+        myBackground = Background.getInstance();
+        myStartScreen = StartScreen.getInstance();
+        myInputOutput = InputOutput.getInstance();
+
         // Display copyright information.
 
         System.out.println(copyText);
 
         myStartScreen.setUpScreen();
-
         myInputOutput.setUpIO();
 
 
@@ -79,7 +78,7 @@ public class Main implements Runnable{
             loopThread.start();
         }
 
-        if (!myGameHandler.isLoaded() && loadThread == null) {
+        if (!myGameHandler.isSoundLoaded() && loadThread == null) {
             loadThread = new Thread(this);
             loadThread.start();
         }
@@ -107,30 +106,9 @@ public class Main implements Runnable{
         }
     }
 
-    public static void main(String[] args)
-    {
-        Main main = new Main();
-        main.init();
 
-        JFrame mainFrame= new JFrame("src.Asteroids Game");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.add(myStartScreen);
-        mainFrame.setSize(1200,800);
-        mainFrame.setLayout(null);
-        mainFrame.setVisible(true);
 
-        mainFrame.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                myStartScreen.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
-                myStartScreen.setSize(e.getComponent().getWidth(), e.getComponent().getHeight());
-                myBackground.setWidth(e.getComponent().getWidth());
-                myBackground.setHeight(e.getComponent().getHeight());
-                myStartScreen.repaint();
-            }
-        });
 
-        main.start();
-    }
 
 
     @Override
@@ -144,9 +122,9 @@ public class Main implements Runnable{
 
         // Run thread for loading sounds.
 
-        if (!myGameHandler.isLoaded() && Thread.currentThread() == loadThread) {
-            myGameHandler.loadSounds();
-            myGameHandler.setLoaded(true);
+        if (!myGameHandler.isSoundLoaded() && Thread.currentThread() == loadThread) {
+            myGameHandler.loadSounds(DELAY);
+            myGameHandler.setSoundLoaded(true);
 
             try {
                 loadThread.join();
@@ -164,7 +142,7 @@ public class Main implements Runnable{
 
             // Update the screen and set the timer for the next loop.
 
-            repaint();
+            myStartScreen.repaint();
             try {
                 startTime += DELAY;
                 Thread.sleep(Math.max(0, startTime - System.currentTimeMillis()));
@@ -175,5 +153,32 @@ public class Main implements Runnable{
         }
 
 
+    }
+
+    private void setUpMainFrame(){
+        JFrame mainFrame= new JFrame("src.Asteroids Game");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.add(myStartScreen);
+        mainFrame.setSize(1200,800);
+        mainFrame.setLayout(null);
+        mainFrame.setVisible(true);
+
+        mainFrame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                myStartScreen.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
+                myStartScreen.setSize(e.getComponent().getWidth(), e.getComponent().getHeight());
+                myBackground.setWidth(e.getComponent().getWidth());
+                myBackground.setHeight(e.getComponent().getHeight());
+                myStartScreen.repaint();
+            }
+        });
+    }
+
+    public static void main(String[] args)
+    {
+        Main main = new Main();
+        main.init();
+        main.setUpMainFrame();
+        main.start();
     }
 }

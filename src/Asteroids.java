@@ -12,7 +12,7 @@ package src; /******************************************************************
 
   Revision History:
 
-  1.01, 12/18/1999: Increased number of active photons allowed.
+  1.01, 12/18/1999: Increased number of isActive photons allowed.
                     Improved explosions for more realism.
                     Added progress bar for loading of sound clips.
   1.2,  12/23/1999: Increased frame rate for smoother animation.
@@ -58,69 +58,12 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
   
   public void loadSounds() {
 
-    // Load all sound clips by playing and immediately stopping them. Update
-    // counter and total for display.
-
-    try {
-      crashSound = AudioSystem.getClip();
-      crashSound.open(AudioSystem.getAudioInputStream(new File("sounds/crash.wav")));
-      clipTotal++;
-      
-      explosionSound = AudioSystem.getClip();
-      explosionSound.open(AudioSystem.getAudioInputStream(new File("sounds/explosion.wav")));
-      clipTotal++;
-      
-      fireSound = AudioSystem.getClip();
-      fireSound.open(AudioSystem.getAudioInputStream(new File("sounds/fire.wav")));
-      clipTotal++;
-      
-      missleSound = AudioSystem.getClip();
-      missleSound.open(AudioSystem.getAudioInputStream(new File("sounds/missle.wav")));
-      clipTotal++;
-      
-      saucerSound = AudioSystem.getClip();
-      saucerSound.open(AudioSystem.getAudioInputStream(new File("sounds/saucer.wav")));
-      clipTotal++;
-      
-      thrustersSound = AudioSystem.getClip();
-      thrustersSound.open(AudioSystem.getAudioInputStream(new File("sounds/thrusters.wav")));
-      clipTotal++;
-      
-      warpSound = AudioSystem.getClip();
-      warpSound.open(AudioSystem.getAudioInputStream(new File("warp.wav")));
-      clipTotal++;
-    }
-    catch (Exception e) {}
-
-      try {
-      crashSound.start();     crashSound.stop();     clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      explosionSound.start(); explosionSound.stop(); clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      fireSound.start();      fireSound.stop();      clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      missleSound.start();    missleSound.stop();    clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      saucerSound.start();    saucerSound.stop();    clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      thrustersSound.start(); thrustersSound.stop(); clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-      warpSound.start();      warpSound.stop();      clipsLoaded++;
-      repaint(); Thread.sleep(DELAY);
-    }
-    catch (InterruptedException e) {}
   }
 
 
 
   public void updateShip() {
 
-    double dx, dy, speed;
-
-    if (!playing)
-      return;
-
-    // Rotate the ship if left or right cursor key is down.
 
     if (left) {
       ship.angle += SHIP_ANGLE_STEP;
@@ -210,20 +153,11 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
     thrustersPlaying = false;
   }
 
-  public void initPhotons() {
-
-    int i;
-
-    for (i = 0; i < MAX_SHOTS; i++)
-      photons[i].active = false;
-    photonIndex = 0;
-  }
-
   public void updatePhotons() {
 
     int i;
 
-    // Move any active photons. Stop it when its counter has expired.
+    // Move any isActive photons. Stop it when its counter has expired.
 
     for (i = 0; i < MAX_SHOTS; i++)
       if (photons[i].active) {
@@ -529,7 +463,7 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
 
     int i, j;
 
-    // Move any active asteroids and check for collisions.
+    // Move any isActive asteroids and check for collisions.
 
     for (i = 0; i < MAX_ROCKS; i++)
       if (asteroids[i].active) {
@@ -631,7 +565,7 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
 
     int i;
 
-    // Move any active explosion debris. Stop explosion when its counter has
+    // Move any isActive explosion debris. Stop explosion when its counter has
     // expired.
 
     for (i = 0; i < MAX_SCRAP; i++)
@@ -701,7 +635,7 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
 			warpSound.start();
     }
 
-    // 'P' key: toggle pause mode and start or stop any active looping sound
+    // 'P' key: toggle pause mode and start or stop any isActive looping sound
     // clips.
 
     if (c == 'p') {

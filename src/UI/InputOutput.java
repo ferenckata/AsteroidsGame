@@ -14,6 +14,19 @@ public class InputOutput implements KeyListener {
     boolean up    = false;
     boolean down  = false;
 
+    private static InputOutput myInstance;
+
+    private InputOutput(){
+
+    }
+
+    public static InputOutput getInstance() {
+        if (myInstance == null){
+            myInstance = new InputOutput();
+        }
+        return myInstance;
+    }
+
     public void setUpIO(){
         // Set up key event handling and set focus to applet window.
         addKeyListener(this);

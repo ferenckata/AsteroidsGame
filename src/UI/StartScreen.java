@@ -1,16 +1,23 @@
 package src.UI;
 
-import src.Domain.Background;
-import src.Domain.Sprite;
+import src.Domain.GameObjects.Background;
 
 import java.awt.*;
 
 public class StartScreen extends Screen {
 
     private Background myBackground;
+    private static StartScreen myInstance;
 
-    public StartScreen(Background background){
-        this.myBackground = background;
+    private StartScreen(){
+        this.myBackground = Background.getInstance();
+    }
+
+    public static StartScreen getInstance(){
+        if(myInstance == null){
+            myInstance = new StartScreen();
+        }
+        return myInstance;
     }
 
     public void setUpScreen(){
