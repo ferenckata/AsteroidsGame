@@ -156,4 +156,12 @@ public class GameData {
     public void setAsteroidsSpeed(double asteroidsSpeed) {
         this.asteroidsSpeed = asteroidsSpeed;
     }
+
+    public int getAsteroidsLeft() {
+        return asteroidsLeft;
+    }
+
+    public int getAsteroidsCounter() {
+        return asteroidsCounter;
+    }
 }

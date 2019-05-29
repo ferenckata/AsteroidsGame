@@ -1,22 +1,21 @@
 package src.Application;
 
-import src.Domain.*;
 import src.Domain.GameObjects.*;
 
-public class Factory {
+public class ShapeFactory {
 
-    private static Factory myInstance;
+    private static ShapeFactory myInstance;
 
     private Background myBackground;
 
-    private Factory(){
+    private ShapeFactory(){
         this.myBackground = new Background();
     }
 
-    public static Factory getInstance(){
+    public static ShapeFactory getInstance(){
 
         if(myInstance == null){
-            myInstance = new Factory();
+            myInstance = new ShapeFactory();
         }
 
         return myInstance;
@@ -115,14 +114,4 @@ public class Factory {
         return explosions;
     }
 
-    public Game createGame(int highScore, boolean sound, boolean detail) {
-        Game myGame = new Game(highScore,sound,detail);
-        return myGame;
-    }
-
-
-    public Sound createGameSound() {
-        Sound gameSound = new Sound();
-        return gameSound;
-    }
 }

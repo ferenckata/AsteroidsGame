@@ -10,4 +10,14 @@ public class Photon extends Sprite {
     public void init() {
         super.isActive = false;
     }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
 }

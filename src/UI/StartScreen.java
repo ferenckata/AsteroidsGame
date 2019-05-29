@@ -10,7 +10,7 @@ public class StartScreen extends Screen {
     private static StartScreen myInstance;
 
     private StartScreen(){
-        this.myBackground = Background.getInstance();
+        this.myBackground = new Background();
     }
 
     public static StartScreen getInstance(){

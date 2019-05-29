@@ -169,26 +169,26 @@ public class Game {
         stopMissile();
     }
 
-    private void initExplosions() {
+    public void initExplosions() {
     }
 
-    private void initAsteroids() {
+    public void initAsteroids() {
     }
 
-    private void stopMissile() {
+    public void stopMissile() {
     }
 
-    private void stopUfo() {
+    public void stopUfo() {
     }
 
-    private void initPhotons() {
+    public void initPhotons() {
         for (Photon photon: myPhotons) {
             photon.init();
             photoIndex = 0;
         }
     }
 
-    private void stopShip() {
+    public void stopShip() {
     }
 
 
@@ -211,11 +211,8 @@ public class Game {
         if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !myUfo.isActive()) {
             myGameData.setNewUfoScore( myGameData.getNewUfoScore() + NEW_UFO_POINTS);
             myGameData.setUfoPassesLeft(UFO_PASSES);
-            myUfo.initUfo();
+            myUfo.init();
         }
-    }
-
-    private void initUfo() {
     }
 
     public void updateGame() {
@@ -226,31 +223,24 @@ public class Game {
         }
 
         myShip.update();
-        updateShip();
-        updatePhotons();
-        updateUfo();
-        updateMissile();
+        myUfo.update();
+        myMissile.update();
+
         updateAsteroids();
         updateExplosions();
+        updatePhotons();
 
     }
 
-    private void updateExplosions() {
+    public void updateExplosions() {
     }
 
-    private void updateAsteroids() {
+    public void updateAsteroids() {
     }
 
-    private void updateMissile() {
+    public void updatePhotons(){
+
     }
 
-    private void updateUfo() {
-    }
-
-    private void updatePhotons() {
-    }
-
-    public void updateShip() {
-    }
 
 }

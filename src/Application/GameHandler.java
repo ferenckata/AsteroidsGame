@@ -1,6 +1,7 @@
 package src.Application;
 
 import src.Domain.*;
+import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
 import src.UI.StartScreen;
 
@@ -10,8 +11,10 @@ import java.io.File;
 public class GameHandler {
 
     private boolean isSoundLoaded = false;
-    private Factory myFactory;
+    private ShapeFactory myShapeFactory;
+    private GameFactory myGameFactory;
     private GameProperties myGameProperties;
+    private GameData myGameData;
     private Game myGame;
     private Sound myGameSound;
     private StartScreen myStartScreen;
@@ -26,7 +29,9 @@ public class GameHandler {
 
     private GameHandler(){
         this.myGameProperties = GameProperties.getInstance();
-        this.myFactory = Factory.getInstance();
+        this.myGameData = GameData.getMyInstance();
+        this.myShapeFactory = ShapeFactory.getInstance();
+        this.myGameFactory = GameFactory.getInstance();
         this.myStartScreen = StartScreen.getInstance();
     }
 
@@ -47,12 +52,12 @@ public class GameHandler {
 
     public void createGameObjects(){
 
-        myUFO = myFactory.createUFO();
-        myShip = myFactory.createShip();
-        myMissile = myFactory.createMissile();
-        myPhotons = myFactory.createPhotons(myGameProperties.getMaxShots());
-        myAsteroids = myFactory.createAsteroids(myGameProperties.getMaxRocks());
-        myExplosions = myFactory.createExplosions(myGameProperties.getMaxScrap());
+        myUFO = myShapeFactory.createUFO();
+        myShip = myShapeFactory.createShip();
+        myMissile = myShapeFactory.createMissile();
+        myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks());
+        myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
 
     }
 
@@ -62,8 +67,8 @@ public class GameHandler {
         boolean sound = true;
         boolean detail = true;
 
-        myGame = myFactory.createGame(highScore,sound,detail);
-        myGameSound = myFactory.createGameSound();
+        myGame = myGameFactory.createGame(highScore,sound,detail);
+        myGameSound = myGameFactory.createGameSound();
 
         myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions);
 
@@ -144,9 +149,12 @@ public class GameHandler {
             myGame.getUFO();
 
             // If all myAsteroids have been destroyed create a new batch.
-            if (asteroidsLeft <= 0)
-                if (--asteroidsCounter <= 0)
-                    initAsteroids();
+            if (myGameData.getAsteroidsLeft() <= 0){
+                int asteroidsCounter = myGameData.getAsteroidsCounter();
+                if (-- asteroidsCounter <= 0){
+                    myGame.initAsteroids();
+                }
+            }
         }
     }
 }

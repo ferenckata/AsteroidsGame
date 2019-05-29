@@ -45,7 +45,7 @@ public class Main implements Runnable{
 
         //Creators
         myGameHandler = GameHandler.getInstance();
-        myBackground = Background.getInstance();
+        myBackground = new Background();
         myStartScreen = StartScreen.getInstance();
         myInputOutput = InputOutput.getInstance();
 
