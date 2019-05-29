@@ -53,94 +53,7 @@ import java.io.File;
 
 public class Asteroids extends JPanel implements Runnable, KeyListener {
 
-
-
   
-  public void loadSounds() {
-
-  }
-
-
-
-  public void updateShip() {
-
-
-    if (left) {
-      ship.angle += SHIP_ANGLE_STEP;
-      if (ship.angle > 2 * Math.PI)
-        ship.angle -= 2 * Math.PI;
-    }
-    if (right) {
-      ship.angle -= SHIP_ANGLE_STEP;
-      if (ship.angle < 0)
-        ship.angle += 2 * Math.PI;
-    }
-
-    // Fire thrusters if up or down cursor key is down.
-
-    dx = SHIP_SPEED_STEP * -Math.sin(ship.angle);
-    dy = SHIP_SPEED_STEP *  Math.cos(ship.angle);
-    if (up) {
-      ship.deltaX += dx;
-      ship.deltaY += dy;
-    }
-    if (down) {
-        ship.deltaX -= dx;
-        ship.deltaY -= dy;
-    }
-
-    // Don't let ship go past the speed limit.
-
-    if (up || down) {
-      speed = Math.sqrt(ship.deltaX * ship.deltaX + ship.deltaY * ship.deltaY);
-      if (speed > MAX_SHIP_SPEED) {
-        dx = MAX_SHIP_SPEED * -Math.sin(ship.angle);
-        dy = MAX_SHIP_SPEED *  Math.cos(ship.angle);
-        if (up)
-          ship.deltaX = dx;
-        else
-          ship.deltaX = -dx;
-        if (up)
-          ship.deltaY = dy;
-        else
-          ship.deltaY = -dy;
-      }
-    }
-
-    // Move the ship. If it is currently in hyperspace, advance the countdown.
-
-    if (ship.active) {
-      ship.advance();
-      ship.render();
-      if (hyperCounter > 0)
-        hyperCounter--;
-
-      // Update the thruster sprites to match the ship sprite.
-
-      fwdThruster.x = ship.x;
-      fwdThruster.y = ship.y;
-      fwdThruster.angle = ship.angle;
-      fwdThruster.render();
-      revThruster.x = ship.x;
-      revThruster.y = ship.y;
-      revThruster.angle = ship.angle;
-      revThruster.render();
-    }
-
-    // Ship is exploding, advance the countdown or create a new ship if it is
-    // done exploding. The new ship is added as though it were in hyperspace.
-    // (This gives the player time to move the ship if it is in imminent
-    // danger.) If that was the last ship, end the game.
-
-    else
-      if (--shipCounter <= 0)
-        if (shipsLeft > 0) {
-          initShip();
-          hyperCounter = HYPER_COUNT;
-        }
-        else
-          endGame();
-  }
 
   public void stopShip() {
 
@@ -580,16 +493,7 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
   public void keyPressed(KeyEvent e) {
     char c;
 
-    // Check if any cursor keys have been pressed and set flags.
 
-    if (e.getKeyCode() == KeyEvent.VK_LEFT)
-      left = true;
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-      right = true;
-    if (e.getKeyCode() == KeyEvent.VK_UP)
-      up = true;
-    if (e.getKeyCode() == KeyEvent.VK_DOWN)
-      down = true;
 
     if ((up || down) && ship.active && !thrustersPlaying) {
     	if (sound && !paused) {
@@ -725,24 +629,13 @@ public class Asteroids extends JPanel implements Runnable, KeyListener {
 
   public void keyReleased(KeyEvent e) {
 
-    // Check if any cursor keys where released and set flags.
 
-    if (e.getKeyCode() == KeyEvent.VK_LEFT)
-      left = false;
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-      right = false;
-    if (e.getKeyCode() == KeyEvent.VK_UP)
-      up = false;
-    if (e.getKeyCode() == KeyEvent.VK_DOWN)
-      down = false;
 
     if (!up && !down && thrustersPlaying) {
       thrustersSound.stop(); 
       thrustersPlaying = false;
     }
   }
-
-  public void keyTyped(KeyEvent e) {}
 
   public void update(Graphics g) {
 

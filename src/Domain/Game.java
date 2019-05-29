@@ -215,14 +215,16 @@ public class Game {
         }
     }
 
-    public void updateGame() {
+    public void updateGame(int direction, int HYPER_COUNT) {
 
 
         if (!playing){
             return;
         }
 
-        myShip.update();
+        moveShip(direction);
+        updateShip(HYPER_COUNT);
+
         myUfo.update();
         myMissile.update();
 
@@ -230,6 +232,54 @@ public class Game {
         updateExplosions();
         updatePhotons();
 
+    }
+
+    private void updateShip(int HYPER_COUNT) {
+        // Move the ship. If it is currently in hyperspace, advance the countdown.
+
+        if (myShip.isActive()) {
+            myShip.advance();
+            myShip.render();
+
+            int hyperCounter = myGameData.getHyperCounter();
+            if (hyperCounter > 0)
+                myGameData.setHyperCounter(hyperCounter--);
+
+            // Update the thruster sprites to match the ship sprite.
+
+            myShip.updateThrusters();
+
+
+        }else{
+
+            // Ship is exploding, advance the countdown or create a new ship if it is
+            // done exploding. The new ship is added as though it were in hyperspace.
+            // (This gives the player time to move the ship if it is in imminent
+            // danger.) If that was the last ship, end the game.
+
+            int shipCounter = myGameData.getShipCounter();
+
+            if (--shipCounter <= 0){
+                // shipCounter is reduced by one, that is moved back to gameData
+                myGameData.setShipCounter(shipCounter);
+                if (myGameData.getShipsLeft() > 0) {
+                    myShip.init();
+                    myGameData.setHyperCounter(HYPER_COUNT);
+                }
+                else{
+                    //ToDo: can game end itself??
+                    endGame();
+                }
+
+            }
+
+
+        }
+
+    }
+
+    private void moveShip(int direction) {
+        myShip.move(direction);
     }
 
     public void updateExplosions() {

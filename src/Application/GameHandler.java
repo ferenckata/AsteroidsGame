@@ -3,6 +3,7 @@ package src.Application;
 import src.Domain.*;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
+import src.UI.InputOutput;
 import src.UI.StartScreen;
 
 import javax.sound.sampled.AudioSystem;
@@ -18,6 +19,7 @@ public class GameHandler {
     private Game myGame;
     private Sound myGameSound;
     private StartScreen myStartScreen;
+    private InputOutput myIO;
     private static GameHandler myInstance;
 
     private UFO myUFO;
@@ -33,6 +35,7 @@ public class GameHandler {
         this.myShapeFactory = ShapeFactory.getInstance();
         this.myGameFactory = GameFactory.getInstance();
         this.myStartScreen = StartScreen.getInstance();
+        this.myIO = InputOutput.getInstance();
     }
 
     public static GameHandler getInstance() {
@@ -138,7 +141,21 @@ public class GameHandler {
 
             // Move and process all sprites.
 
-            myGame.updateGame();
+            // move ship
+
+            int direction = 0;
+
+            if(myIO.isUp()){
+                direction = 1;
+            }else if(myIO.isDown()){
+                direction = 2;
+            }else if(myIO.isRight()){
+                direction = 3;
+            }else if(myIO.isLeft()){
+                direction = 4;
+            }
+
+            myGame.updateGame(direction, myStartScreen.getHyperCount());
 
 
             // Check the score and advance high score, add a new ship or start the
