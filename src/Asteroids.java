@@ -53,63 +53,11 @@ import java.io.File;
 
 public class Asteroids extends JPanel implements Runnable, KeyListener {
 
-  
 
-  public void stopShip() {
-
-    ship.active = false;
-    shipCounter = SCRAP_COUNT;
-    if (shipsLeft > 0)
-      shipsLeft--;
-		if (loaded)
-			thrustersSound.stop();
-    thrustersPlaying = false;
-  }
-
-  public void updatePhotons() {
-
-    int i;
-
-    // Move any isActive photons. Stop it when its counter has expired.
-
-    for (i = 0; i < MAX_SHOTS; i++)
-      if (photons[i].active) {
-        if (!photons[i].advance())
-          photons[i].render();
-        else
-          photons[i].active = false;
-      }
-  }
 
   public void initUfo() {
 
-    double angle, speed;
 
-    // Randomly set flying saucer at left or right edge of the screen.
-
-    ufo.active = true;
-    ufo.x = -AsteroidsSprite.width / 2;
-    ufo.y = Math.random() * 2 * AsteroidsSprite.height - AsteroidsSprite.height;
-    angle = Math.random() * Math.PI / 4 - Math.PI / 2;
-    speed = MAX_ROCK_SPEED / 2 + Math.random() * (MAX_ROCK_SPEED / 2);
-    ufo.deltaX = speed * -Math.sin(angle);
-    ufo.deltaY = speed *  Math.cos(angle);
-    if (Math.random() < 0.5) {
-      ufo.x = AsteroidsSprite.width / 2;
-      ufo.deltaX = -ufo.deltaX;
-    }
-    if (ufo.y > 0)
-      ufo.deltaY = ufo.deltaY;
-    ufo.render();
-    saucerPlaying = true;
-		
-		  if (sound) {
-			  saucerSound.setFramePosition(0);
-			  saucerSound.start();
-			  saucerSound.loop(Clip.LOOP_CONTINUOUSLY);
-		  }
-		 
-    ufoCounter = (int) Math.abs(AsteroidsSprite.width / ufo.deltaX);
   }
 
   public void updateUfo() {

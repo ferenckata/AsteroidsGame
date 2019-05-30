@@ -55,7 +55,7 @@ public class GameHandler {
 
     public void createGameObjects(){
 
-        myUFO = myShapeFactory.createUFO();
+        myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed());
         myShip = myShapeFactory.createShip();
         myMissile = myShapeFactory.createMissile();
         myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
@@ -73,13 +73,13 @@ public class GameHandler {
         myGame = myGameFactory.createGame(highScore,sound,detail);
         myGameSound = myGameFactory.createGameSound();
 
-        myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions);
+        myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions,myStartScreen.getMinRockSpeed());
 
         if (isSoundLoaded){
             myGameSound.stopThrustersSound();
             myGameSound.setThrustersPlaying(false);
         }
-        myGame.endGame();
+        myGame.endGame(myStartScreen.getScrapCount());
 
     }
 
@@ -136,6 +136,22 @@ public class GameHandler {
 
     }
 
+    private int getDirection(){
+        int direction = 0;
+
+        if(myIO.isUp()){
+            direction = 1;
+        }else if(myIO.isDown()){
+            direction = 2;
+        }else if(myIO.isRight()){
+            direction = 3;
+        }else if(myIO.isLeft()){
+            direction = 4;
+        }
+
+        return direction;
+    }
+
     public void updateGame() {
         if (!myGame.isPaused()) {
 
@@ -143,19 +159,9 @@ public class GameHandler {
 
             // move ship
 
-            int direction = 0;
+            int direction = getDirection();
 
-            if(myIO.isUp()){
-                direction = 1;
-            }else if(myIO.isDown()){
-                direction = 2;
-            }else if(myIO.isRight()){
-                direction = 3;
-            }else if(myIO.isLeft()){
-                direction = 4;
-            }
-
-            myGame.updateGame(direction, myStartScreen.getHyperCount());
+            myGame.updateGame(direction, myStartScreen.getHyperCount(),myStartScreen.getScrapCount());
 
 
             // Check the score and advance high score, add a new ship or start the

@@ -4,6 +4,8 @@ import src.Application.Sound;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
 
+import javax.sound.sampled.Clip;
+
 import static src.Domain.GameProperties.*;
 
 public class Game {
@@ -34,6 +36,7 @@ public class Game {
         getMyGameData().setHighScore(highScore);
         this.setSound(sound);
         this.setDetail(detail);
+        this.gameSound = Sound.getInstance();
         myGameProperties = GameProperties.getInstance();
         myPhotons = new Photon[myGameProperties.getMaxShots()];
         myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
@@ -131,15 +134,15 @@ public class Game {
         this.myGameData = myGameData;
     }
 
-    public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions) {
+    public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions, double MIN_ROCK_SPEED) {
 
         // Initialize game data and sprites.
 
         myGameData.setScore(0);
-        myGameData.setShipsLeft(MAX_SHIPS);
+        myGameData.setShipsLeft(getMaxShips());
         myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
-        myGameData.setNewShipScore(NEW_SHIP_POINTS);
-        myGameData.setNewUfoScore(NEW_UFO_POINTS);
+        myGameData.setNewShipScore(getNewShipPoints());
+        myGameData.setNewUfoScore(getNewUfoPoints());
 
         this.myShip = ship;
         myShip.init();
@@ -159,12 +162,12 @@ public class Game {
     }
 
 
-    public void endGame() {
+    public void endGame(int SCRAP_COUNT) {
 
         // Stop myShip, flying saucer, guided myMissile and associated sounds.
 
         playing = false;
-        stopShip();
+        stopShip(SCRAP_COUNT);
         stopUfo();
         stopMissile();
     }
@@ -173,6 +176,17 @@ public class Game {
     }
 
     public void initAsteroids() {
+    }
+
+    public void initUfo(){
+
+        // Randomly set flying saucer at left or right edge of the screen.
+
+        myUfo.init();
+
+        gameSound.initUfoSound(sound);
+
+        ufoCounter = (int) Math.abs(AsteroidsSprite.width / ufo.deltaX);
     }
 
     public void stopMissile() {
@@ -188,7 +202,13 @@ public class Game {
         }
     }
 
-    public void stopShip() {
+    public void stopShip(int SCRAP_COUNT) {
+        myShip.stop();
+
+        myGameData.setShipCounter(SCRAP_COUNT);
+        int shipsLeft = myGameData.getShipsLeft();
+        if (shipsLeft > 0)
+            myGameData.setShipsLeft(shipsLeft--);
     }
 
 
@@ -200,7 +220,7 @@ public class Game {
 
     public void rewardShip() {
         if (myGameData.getScore() > myGameData.getNewShipScore()) {
-            myGameData.setNewShipScore( myGameData.getNewShipScore() + NEW_SHIP_POINTS);
+            myGameData.setNewShipScore( myGameData.getNewShipScore() + getNewShipPoints());
             myGameData.setShipsLeft(myGameData.getShipsLeft() + 1);
         }
 
@@ -209,13 +229,13 @@ public class Game {
     public void getUFO() {
 
         if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !myUfo.isActive()) {
-            myGameData.setNewUfoScore( myGameData.getNewUfoScore() + NEW_UFO_POINTS);
-            myGameData.setUfoPassesLeft(UFO_PASSES);
+            myGameData.setNewUfoScore( myGameData.getNewUfoScore() + getNewUfoPoints());
+            myGameData.setUfoPassesLeft(getUfoPasses());
             myUfo.init();
         }
     }
 
-    public void updateGame(int direction, int HYPER_COUNT) {
+    public void updateGame(int direction, int HYPER_COUNT, int SCRAP_COUNT) {
 
 
         if (!playing){
@@ -223,7 +243,8 @@ public class Game {
         }
 
         moveShip(direction);
-        updateShip(HYPER_COUNT);
+        updateShip(HYPER_COUNT, SCRAP_COUNT);
+        
 
         myUfo.update();
         myMissile.update();
@@ -234,7 +255,7 @@ public class Game {
 
     }
 
-    private void updateShip(int HYPER_COUNT) {
+    private void updateShip(int HYPER_COUNT, int SCRAP_COUNT) {
         // Move the ship. If it is currently in hyperspace, advance the countdown.
 
         if (myShip.isActive()) {
@@ -268,7 +289,7 @@ public class Game {
                 }
                 else{
                     //ToDo: can game end itself??
-                    endGame();
+                    endGame(SCRAP_COUNT);
                 }
 
             }
@@ -289,6 +310,17 @@ public class Game {
     }
 
     public void updatePhotons(){
+
+        // Move any isActive photons. Stop it when its counter has expired.
+
+        for (Photon photon : myPhotons){
+            if (photon.isActive()) {
+                if (!photon.advance())
+                    photon.render();
+                else
+                    photon.setActive(false);
+            }
+        }
 
     }
 

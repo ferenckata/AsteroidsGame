@@ -36,6 +36,13 @@ public class Sound {
         return myInstance;
     }
 
+    public SoundData getMySoundData() {
+        return mySoundData;
+    }
+
+    public Clip getSaucerSound() {
+        return saucerSound;
+    }
 
     public void stopThrustersSound() {
     }
@@ -99,5 +106,16 @@ public class Sound {
         }
         clipsLoaded++;
 
+    }
+
+    public void initUfoSound(boolean sound) {
+
+        mySoundData.setSaucerPlaying(true);
+
+        if (sound) {
+            saucerSound.setFramePosition(0);
+            saucerSound.start();
+            saucerSound.loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
 }
