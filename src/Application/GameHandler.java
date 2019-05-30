@@ -75,7 +75,7 @@ public class GameHandler {
         myGameSound = myGameFactory.createGameSound();
 
 
-        myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions,myStartScreen.getMinRockSpeed());
+        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
         myGame.setHYPER_COUNT(myStartScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myStartScreen.getMaxRockSpeed());
         myGame.setMAX_ROCK_SPIN(myStartScreen.getMaxRockSpin());
@@ -192,23 +192,23 @@ public class GameHandler {
         if (keyEvent.isActionKey()){
             switch (keyEvent.getKeyCode()){
                 case KeyEvent.VK_UP :
-                    myGame.updateGame(1,myStartScreen.getHyperCount());
+                    myGame.updateGame(1);
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
                         if (myGame.isSound() && !myGame.isPaused()){
                             myGameSound.loopThrustersSound();
                         }
                     }
                 case KeyEvent.VK_DOWN :
-                    myGame.updateGame(2,myStartScreen.getHyperCount());
+                    myGame.updateGame(2);
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
                         if (myGame.isSound() && !myGame.isPaused()){
                             myGameSound.loopThrustersSound();
                         }
                     }
                 case KeyEvent.VK_RIGHT :
-                    myGame.updateGame(4,myStartScreen.getHyperCount());
+                    myGame.updateGame(4);
                 case KeyEvent.VK_LEFT :
-                    myGame.updateGame(3,myStartScreen.getHyperCount());
+                    myGame.updateGame(3);
 
             }
         } else {

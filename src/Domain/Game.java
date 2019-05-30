@@ -21,6 +21,9 @@ public class Game {
     private double MAX_ROCK_SPIN;
     private double MAX_ROCK_SPEED;
 
+    private double MIN_ROCK_SPIN;
+    private double MIN_ROCK_SPEED;
+
     private int SCRAP_COUNT;
     private int MISSLE_COUNT;
     private int HYPER_COUNT;
@@ -88,6 +91,22 @@ public class Game {
     public int getHYPER_COUNT() {
         return HYPER_COUNT;
 
+    }
+
+    public double getMIN_ROCK_SPIN() {
+        return MIN_ROCK_SPIN;
+    }
+
+    public void setMIN_ROCK_SPIN(double MIN_ROCK_SPIN) {
+        this.MIN_ROCK_SPIN = MIN_ROCK_SPIN;
+    }
+
+    public double getMIN_ROCK_SPEED() {
+        return MIN_ROCK_SPEED;
+    }
+
+    public void setMIN_ROCK_SPEED(double MIN_ROCK_SPEED) {
+        this.MIN_ROCK_SPEED = MIN_ROCK_SPEED;
     }
 
     public void setHYPER_COUNT(int HYPER_COUNT) {
@@ -216,7 +235,7 @@ public class Game {
     }
 
 
-    public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions, double MIN_ROCK_SPEED) {
+    public void initGame(Ship ship, UFO ufo,Asteroid[] asteroids, Explosion[] explosions) {
 
 
         // Initialize game data and sprites.

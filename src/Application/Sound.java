@@ -111,6 +111,7 @@ public class Sound {
         crashSound.setFramePosition(0);
         crashSound.start();
 
+    }
 
     public void stopThrustersSound() {
 
