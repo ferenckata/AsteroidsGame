@@ -10,7 +10,9 @@ import java.io.IOException;
 
 public class Sound {
 
-    private static Sound myInstance;
+    private static Sound myInstance = null;
+
+
     private int clipTotal;
     private int clipsLoaded;
     private Clip crashSound;
@@ -98,7 +100,7 @@ public class Sound {
 
     public void initUfoSound(boolean sound) {
 
-        mySoundData.setSaucerPlaying(true);
+        setSaucerPlaying(true);
 
         if (sound) {
             saucerSound.setFramePosition(0);
@@ -202,6 +204,15 @@ public class Sound {
         this.warpSound = warpSound;
     }
 
+    public int getClipTotal() {
+        return clipTotal;
+    }
+
+    public int getClipsLoaded() {
+        return clipsLoaded;
+    }
+
+
     public void loopThrustersSound() {
         thrustersSound.setFramePosition(0);
         thrustersSound.stop();
@@ -222,6 +233,7 @@ public class Sound {
         missileSound.setFramePosition(0);
         missileSound.start();
         missileSound.loop(Clip.LOOP_CONTINUOUSLY);
+        missilePlaying = true;
     }
 
     public void loopSaucerSound() {
@@ -240,20 +252,37 @@ public class Sound {
                 fireSound.stop();
             case "Missile" :
                 missileSound.stop();
+                missilePlaying = false;
             case "Saucer" :
                 saucerSound.stop();
+                saucerPlaying = false;
             case "Thrusters" :
                 thrustersSound.stop();
+                thrustersPlaying = false;
             case "Warp" :
                 warpSound.stop();
             case "AllSounds" :
-                crashSound.stop();
-                explosionSound.stop();
-                fireSound.stop();
-                missileSound.stop();
-                saucerSound.stop();
-                thrustersSound.stop();
-                warpSound.stop();
+                stopSound("Crash");
+                stopSound("Explosion");
+                stopSound("Fire");
+                stopSound("Missile");
+                stopSound("Saucer");
+                stopSound("Thrusters");
+                stopSound("Warp");
+        }
+    }
+
+    public void startExplosionSound(boolean sound) {
+        if (sound) {
+            explosionSound.setFramePosition(0);
+            explosionSound.start();
+        }
+    }
+
+    public void startCrashSound(boolean sound) {
+        if (sound) {
+            crashSound.setFramePosition(0);
+            crashSound.start();
         }
     }
 }

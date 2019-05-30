@@ -1,13 +1,14 @@
+/*
 package src.UI;
 
 import src.Application.GameHandler;
-import src.Domain.Data.FontData;
 import src.Domain.GameObjects.Background;
 
 import javax.swing.*;
 import java.awt.*;
 
 public abstract class Screen extends JPanel {
+
 
     private static final int DELAY = 20;             // Milliseconds between screen and
     public static final int FPS   =                 // the resulting frame rate.
@@ -33,7 +34,7 @@ public abstract class Screen extends JPanel {
     // Probablility of flying saucer firing a missle during any given frame
     // (other conditions must be met).
 
-    private static final double MISSLE_PROBABILITY = 0.45 / FPS;
+    private static final double MISSILE_PROBABILITY = 0.45 / FPS;
 
     // Off screen image.
     private Dimension offDimension;
@@ -294,9 +295,10 @@ public abstract class Screen extends JPanel {
         return MAX_SHIP_SPEED;
     }
 
-    public static double getMissleProbability() {
-        return MISSLE_PROBABILITY;
+    public static double getMissileProbability() {
+        return MISSILE_PROBABILITY;
     }
 
     public static double getMaxRockSpeedTimesFPSPer2(){ return MAX_ROCK_SPEED * FPS / 2;}
 }
+*/

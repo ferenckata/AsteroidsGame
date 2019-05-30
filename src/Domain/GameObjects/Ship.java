@@ -50,7 +50,7 @@ public class Ship extends Sprite{
     private void initPhotons() {
         for (Photon photon: myPhotons) {
             photon.init();
-            GameData.getMyInstance().setPhotonIndex(0); // this should be changed somehow
+            GameData.getInstance().setPhotonIndex(0); // this should be changed somehow
         }
 
     }

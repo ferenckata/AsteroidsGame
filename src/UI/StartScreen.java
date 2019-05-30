@@ -1,3 +1,4 @@
+/*
 package src.UI;
 
 import src.Domain.GameObjects.Background;
@@ -38,3 +39,4 @@ public class StartScreen extends Screen {
     }
 
 }
+*/

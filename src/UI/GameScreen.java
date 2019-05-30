@@ -1,7 +1,7 @@
 package src.UI;
 
 import src.Application.GameHandler;
-import src.Domain.Data.FontData;
+import src.Domain.Game;
 import src.Domain.GameObjects.*;
 
 import javax.swing.*;
@@ -9,36 +9,56 @@ import java.awt.*;
 
 public class GameScreen extends JPanel {
 
-    private static String copyName = "src.Asteroids";
-    private static String copyVers = "Version 1.3";
-    private static String copyInfo = "Copyright 1998-2001 by Mike Hall";
-    private static String copyLink = "http://www.brainjar.com";
+    private  String copyName = "src.Asteroids";
+    private  String copyVers = "Version 1.3";
+    private  String copyInfo = "Copyright 1998-2001 by Mike Hall";
+    private  String copyLink = "http://www.brainjar.com";
 
-    private static final int DELAY = 20;             // Milliseconds between screen and
-    public static final int FPS   =                 // the resulting frame rate.
+    private  final int DELAY = 20;             // Milliseconds between screen and
+    public  final int FPS   =                 // the resulting frame rate.
             Math.round(1000 / getDELAY());
 
-    private static final int SCRAP_COUNT  = 2 * FPS;  // Timer counter starting values
-    private static final int HYPER_COUNT  = 3 * FPS;  // calculated using number of
-    private static final int MISSILE_COUNT = 4 * FPS;  // seconds x frames per second.
-    private static final int STORM_PAUSE  = 2 * FPS;
+    private  final int SCRAP_COUNT  = 2 * FPS;  // Timer counter starting values
+    private  final int HYPER_COUNT  = 3 * FPS;  // calculated using number of
+    private  final int MISSILE_COUNT = 4 * FPS;  // seconds x frames per second.
+    private  final int STORM_PAUSE  = 2 * FPS;
+
+    private  final double MIN_ROCK_SPEED =  40.0 / FPS;
+    private  final double MAX_ROCK_SPEED = 240.0 / FPS;
+    private  final double MAX_ROCK_SPIN  = Math.PI / FPS;
+
+    // Ship's rotation and acceleration rates and maximum speed.
+
+    private  final double SHIP_ANGLE_STEP = Math.PI / FPS;
+    private  final double SHIP_SPEED_STEP = 15.0 / FPS;
+    private  final double MAX_SHIP_SPEED  = 1.25 * MAX_ROCK_SPEED;
+
+    // Probablility of flying saucer firing a missle during any given frame
+    // (other conditions must be met).
+
+    private  final double MISSILE_PROBABILITY = 0.45 / FPS;
+
+
+    private Font font      = new Font("Helvetica", Font.BOLD, 12);
+    private FontMetrics fm = getFontMetrics(font);
+    private int fontWidth  = fm.getMaxAdvance();
+    private int fontHeight = fm.getHeight();
 
     // Off screen image.
     private Dimension offDimension;
     private Image     offImage;
     private Graphics offGraphics;
-    private GameHandler myGameHandler;
     private Background myBackground;
-    private static GameScreen myInstance;
+    private static GameScreen myInstance = null;
 
-    private GameScreen(Background myBackground){
-        this.myBackground = myBackground;
-        this.myGameHandler = GameHandler.getInstance();
+    private GameScreen(){
+        System.out.println("GAMESCREEN");
+        this.myBackground = new Background();
     }
 
-    public static GameScreen getInstance(Background myBackground){
+    public static GameScreen getInstance(){
         if(myInstance == null){
-            myInstance = new GameScreen(myBackground);
+            myInstance = new GameScreen();
         }
         return myInstance;
     }
@@ -53,21 +73,17 @@ public class GameScreen extends JPanel {
 
         // Generate the starry background.
         myBackground.setUpStars();
-
         setBounds(0,0,1200,800);
-
         setFocusable(true);
 
     }
 
-
     public void update(Graphics g) {
-
         paint(g);
     }
 
     public void paint(Graphics g) {
-
+        GameHandler myGameHandler = GameHandler.getInstance();
         Dimension d = getSize();
         int i;
         int c;
@@ -182,9 +198,9 @@ public class GameScreen extends JPanel {
         Explosion[] explosions = myGameHandler.getExplosions();
         for (i = 0; i < myGameHandler.getMaxScrap(); i++)
             if (explosions[i].isActive()) {
-                c = (255 / SCRAP_COUNT) * explosionCounter [i];
+                c = (255 / SCRAP_COUNT) * myGameHandler.getExplosionCounter()[i];
                 offGraphics.setColor(new Color(c, c, c));
-                offGraphics.drawPolygon(explosions[i].sprite);
+                offGraphics.drawPolygon(explosions[i].getSprite());
             }
 
         // Display status and messages.
@@ -192,16 +208,16 @@ public class GameScreen extends JPanel {
         offGraphics.setFont(font);
         offGraphics.setColor(Color.white);
 
-        offGraphics.drawString("Score: " + score, fontWidth, fontHeight);
-        offGraphics.drawString("Ships: " + shipsLeft, fontWidth, d.height - fontHeight);
-        s = "High: " + highScore;
+        offGraphics.drawString("Score: " + myGameHandler.getScore(), fontWidth, fontHeight);
+        offGraphics.drawString("Ships: " + myGameHandler.getShipsLeft(), fontWidth, d.height - fontHeight);
+        s = "High: " + myGameHandler.getHighScore();
         offGraphics.drawString(s, d.width - (fontWidth + fm.stringWidth(s)), fontHeight);
-        if (!sound) {
+        if (!myGameHandler.isSoundActive()) {
             s = "Mute";
             offGraphics.drawString(s, d.width - (fontWidth + fm.stringWidth(s)), d.height - fontHeight);
         }
 
-        if (!playing) {
+        if (!myGameHandler.isGameActive()) {
             s = copyName;
             offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 2 - 2 * fontHeight);
             s = copyVers;
@@ -210,7 +226,7 @@ public class GameScreen extends JPanel {
             offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 2 + fontHeight);
             s = copyLink;
             offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 2 + 2 * fontHeight);
-            if (!loaded) {
+            if (!myGameHandler.isSoundLoaded()) {
                 s = "Loading sounds...";
                 w = 4 * fontWidth + fm.stringWidth(s);
                 h = fontHeight;
@@ -219,20 +235,19 @@ public class GameScreen extends JPanel {
                 offGraphics.setColor(Color.black);
                 offGraphics.fillRect(x, y, w, h);
                 offGraphics.setColor(Color.gray);
-                if (clipTotal > 0)
-                    offGraphics.fillRect(x, y, (int) (w * clipsLoaded / clipTotal), h);
-                offGraphics.setColor(Color.white);
-                offGraphics.drawRect(x, y, w, h);
-                offGraphics.drawString(s, x + 2 * fontWidth, y + fm.getMaxAscent());
-            }
-            else {
+                if (myGameHandler.getTotalClips() > 0) {
+                    offGraphics.fillRect(x, y, (int) (w * myGameHandler.getLoadedClips() / myGameHandler.getTotalClips()), h);
+                    offGraphics.setColor(Color.white);
+                    offGraphics.drawRect(x, y, w, h);
+                    offGraphics.drawString(s, x + 2 * fontWidth, y + fm.getMaxAscent());
+                }
+            } else {
                 s = "Game Over";
                 offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 4);
                 s = "'S' to Start";
                 offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 4 + fontHeight);
             }
-        }
-        else if (paused) {
+        } else if (myGameHandler.isGamePaused()) {
             s = "Game Paused";
             offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 4);
         }
@@ -242,14 +257,11 @@ public class GameScreen extends JPanel {
         g.drawImage(offImage, 0, 0, this);
     }
 
-
-    private FontData fontData;
-
-    public static int getDELAY() {
+    public int getDELAY() {
         return DELAY;
     }
 
-    public static int getScrapCount() {
+    public int getScrapCount() {
         return SCRAP_COUNT;
     }
 
@@ -257,11 +269,11 @@ public class GameScreen extends JPanel {
         return HYPER_COUNT;
     }
 
-    public static int getMissileCount() {
+    public int getMissileCount() {
         return MISSILE_COUNT;
     }
 
-    public static int getStormPause() {
+    public int getStormPause() {
         return STORM_PAUSE;
     }
 
@@ -289,13 +301,40 @@ public class GameScreen extends JPanel {
         this.offGraphics = offGraphics;
     }
 
-    public FontData getFontData() {
-        return fontData;
+    public void setUpBackGround(int width, int height) {
+
     }
 
-    public void setFontData(FontData fontData) {
-        this.fontData = fontData;
+
+    public double getMinRockSpeed() {
+        return MIN_ROCK_SPEED;
     }
-}
+
+    public double getMaxRockSpeed() {
+        return MAX_ROCK_SPEED;
+    }
+
+    public double getMaxRockSpin() {
+        return MAX_ROCK_SPIN;
+    }
+
+    public double getShipAngleStep() {
+        return SHIP_ANGLE_STEP;
+    }
+
+    public double getShipSpeedStep() {
+        return SHIP_SPEED_STEP;
+    }
+
+    public double getMaxShipSpeed() {
+        return MAX_SHIP_SPEED;
+    }
+
+    public double getMissileProbability() {
+        return MISSILE_PROBABILITY;
+    }
+
+    public double getMaxRockSpeedTimesFPSPer2(){ return MAX_ROCK_SPEED * FPS / 2;}
+
 
 }

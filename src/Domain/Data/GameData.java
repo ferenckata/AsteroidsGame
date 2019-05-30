@@ -37,7 +37,7 @@ public class GameData {
 
     private int   explosionIndex;                         // Next available explosion sprite.
 
-    private static GameData myInstance;
+    private static GameData myInstance = null;
     private GameProperties myGameProperties;
 
     private GameData(){
@@ -46,7 +46,7 @@ public class GameData {
         explosionCounter = new int[myGameProperties.getMaxScrap()];
     }
 
-    public static GameData getMyInstance(){
+    public static GameData getInstance(){
         if(myInstance==null){
             myInstance = new GameData();
         }

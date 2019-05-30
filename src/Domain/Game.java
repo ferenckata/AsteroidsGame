@@ -1,5 +1,6 @@
 package src.Domain;
 
+import src.Application.OnGameListener;
 import src.Application.Sound;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
@@ -25,12 +26,12 @@ public class Game {
     private double MIN_ROCK_SPEED;
 
     private int SCRAP_COUNT;
-    private int MISSLE_COUNT;
+    private int MISSILE_COUNT;
     private int HYPER_COUNT;
 
     private int STORM_PAUSE;
 
-    private double MISSLE_PROBABILITY;
+    private double MISSILE_PROBABILITY;
     private double MaxRockSpeedTimesFPSPer2;
 
     // Sprite objects.
@@ -42,9 +43,10 @@ public class Game {
     private Explosion[] myExplosions;
     private GameData myGameData;
     private GameProperties myGameProperties;
+    private OnGameListener myOnGameListener;
 
-    public Game(int highScore, boolean sound, boolean detail){
-        setMyGameData(GameData.getMyInstance());
+    public Game(int highScore, boolean sound, boolean detail, OnGameListener myOnGameListener){
+        setMyGameData(GameData.getInstance());
         getMyGameData().setHighScore(highScore);
         this.setSound(sound);
         this.setDetail(detail);
@@ -53,15 +55,16 @@ public class Game {
         myPhotons = new Photon[myGameProperties.getMaxShots()];
         myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
         myExplosions = new Explosion[myGameProperties.getMaxScrap()];
+        this.myOnGameListener = myOnGameListener;
 
     }
 
-    public double getMISSLE_PROBABILITY() {
-        return MISSLE_PROBABILITY;
+    public double getMISSILE_PROBABILITY() {
+        return MISSILE_PROBABILITY;
     }
 
-    public void setMISSLE_PROBABILITY(double MISSLE_PROBABILITY) {
-        this.MISSLE_PROBABILITY = MISSLE_PROBABILITY;
+    public void setMISSILE_PROBABILITY(double MISSILE_PROBABILITY) {
+        this.MISSILE_PROBABILITY = MISSILE_PROBABILITY;
     }
 
     public double getMaxRockSpeedTimesFPSPer2() {
@@ -80,12 +83,12 @@ public class Game {
         this.STORM_PAUSE = STORM_PAUSE;
     }
 
-    public int getMISSLE_COUNT() {
-        return MISSLE_COUNT;
+    public int getMISSILE_COUNT() {
+        return MISSILE_COUNT;
     }
 
-    public void setMISSLE_COUNT(int MISSLE_COUNT) {
-        this.MISSLE_COUNT = MISSLE_COUNT;
+    public void setMISSILE_COUNT(int MISSILE_COUNT) {
+        this.MISSILE_COUNT = MISSILE_COUNT;
     }
 
     public int getHYPER_COUNT() {
@@ -243,18 +246,18 @@ public class Game {
         myGameData.setScore(0);
 
         myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
-        myGameData.setShipsLeft(MAX_SHIPS);
+        myGameData.setShipsLeft(myGameProperties.getMAX_SHIPS());
 
-        myGameData.setNewShipScore(NEW_SHIP_POINTS);
-        myGameData.setNewUfoScore(NEW_UFO_POINTS);
+        myGameData.setNewShipScore(myGameProperties.getNewShipPoints());
+        myGameData.setNewUfoScore(myGameProperties.getNewUfoPoints());
 
         this.myShip = ship;
         myShip.init();
 
         myGameData.setHyperCounter(0);
 
-        stopUfo();
-        stopMissile();
+        //stopUfo();
+        //stopMissile();
         initAsteroids();
         initExplosions();
         playing = true;
@@ -299,26 +302,18 @@ public class Game {
         // Randomly set flying saucer at left or right edge of the screen.
 
         myUfo.init();
-
-
         gameSound.initUfoSound(sound);
-
-
         myGameData.setUfoCounter(myUfo.getCounter());
     }
 
-    public void initMissle() {
+    public void initMissile() {
 
         myUfo.initMissile();
 
-        myGameData.setMissleCounter(MISSLE_COUNT);
+        myGameData.setMissileCounter(MISSILE_COUNT);
+        myOnGameListener.onSoundAction("Missile");
 
-        if (sound) {
-            missleSound.start();
-            missleSound.loop(Clip.LOOP_CONTINUOUSLY);
-        }
 
-        misslePlaying = true;
     }
 
 
@@ -471,7 +466,7 @@ public class Game {
                 if (myShip.isActive() && myGameData.getHyperCounter() <= 0 &&
                         myUfo.isActive() && !myUfo.getMyMissile().isActive() &&
                         d > MaxRockSpeedTimesFPSPer2 &&
-                        Math.random() < MISSLE_PROBABILITY){
+                        Math.random() < MISSILE_PROBABILITY){
                     myUfo.getMyMissile().init();
                 }
             }
@@ -509,17 +504,14 @@ public class Game {
                 // If hit by photon, kill asteroid and advance score. If asteroid is
                 // large, make some smaller ones to replace it.
 
+                Photon[] photons = getMyPhotons();
                 for (int j = 0; j < myGameProperties.getMAX_SHOTS(); j++)
-                    if (photons[j].active && asteroid.isActive() && asteroid.isColliding(photons[j])) {
+                    if (photons[j].isActive() && asteroid.isActive() && asteroid.isColliding(photons[j])) {
                         int asteroidsLeft = myGameData.getAsteroidsLeft();
                         myGameData.setAsteroidsLeft(--asteroidsLeft);
                         asteroid.setActive(false);
-                        photons[j].active = false;
-                        if (sound) {
-                            explosionSound.setFramePosition(0);
-                            explosionSound.start();
-                        }
-
+                        photons[j].setActive(false);
+                        myOnGameListener.onSoundAction("Explosion");
                         explode(asteroid);
                         if (!asteroid.getIsSmall()) {
                             myGameData.setScore(myGameData.getScore() + myGameProperties.getBigPoints());
@@ -559,20 +551,17 @@ public class Game {
         // it when its counter has expired.
 
         if (myUfo.getMyMissile().isActive()) {
-            int missleCounter = myGameData.getMissleCounter();
-            if (--missleCounter <= 0){
-                myGameData.setMissleCounter(missleCounter);
-                myUfo.stopMissle();
+            int missileCounter = myGameData.getMissileCounter();
+            if (--missileCounter <= 0){
+                myGameData.setMissileCounter(missileCounter);
+                myUfo.stopMissile();
             } else {
                 guideMissle();
                 myUfo.getMyMissile().advance();
                 myUfo.getMyMissile().render();
                 for (Photon photon: myPhotons) {
                     if (photon.isActive() && myUfo.getMyMissile().isColliding(photon)) {
-                        if (sound) {
-                            crashSound.setFramePosition(0);
-                            crashSound.start();
-                        }
+                        myOnGameListener.onSoundAction("Crash");
                         explode(myUfo.getMyMissile());
                         myUfo.getMyMissile().stop();
                         myGameData.setScore(myGameData.getScore() + myGameProperties.getMisslePoints());
@@ -603,33 +592,26 @@ public class Game {
         myUfo.stop();
         myGameData.setUfoCounter(0);
         myGameData.setUfoPassesLeft(0);
-            if (loaded){
-                saucerSound.stop();
-            }
-            saucerPlaying = false;
+        myOnGameListener.onSoundAction("Saucer");
+
     }
 
 
     public void stopMissile() {
         myUfo.getMyMissile().stop();
-        myGameData.setMissleCounter(0);
-        if (loaded)
-            missleSound.stop();
-        misslePlaying = false;
+        myGameData.setMissileCounter(0);
+        myOnGameListener.onSoundAction("StopMissile");
     }
 
 
     // other methods -------------------
 
     private void killShip(){
-        if (sound) {
-            crashSound.setFramePosition(0);
-            crashSound.start();
-        }
+        myOnGameListener.onSoundAction("Crash");
         explode(myShip);
         stopShip();
         stopUfo();
-        myUfo.stopMissle();
+        myUfo.stopMissile();
     }
 
     public void evaluateHighScore() {

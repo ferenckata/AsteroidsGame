@@ -3,38 +3,29 @@ package src.Application;
 import src.Domain.*;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
+import src.UI.GameScreen;
 import src.UI.InputOutput;
-import src.UI.StartScreen;
-
 import java.awt.event.KeyEvent;
 
-public class GameHandler {
+public class GameHandler implements OnGameListener{
 
     private boolean isSoundLoaded = false;
-    private ShapeFactory myShapeFactory;
-    private GameFactory myGameFactory;
-    private GameProperties myGameProperties;
-    private GameData myGameData;
+    private ShapeFactory myShapeFactory = ShapeFactory.getInstance();
+    private GameFactory myGameFactory = GameFactory.getInstance();
+    private GameProperties myGameProperties = GameProperties.getInstance();
+    private GameData myGameData = GameData.getInstance();
     private Game myGame;
     private Sound myGameSound;
-    private StartScreen myStartScreen;
-    private InputOutput myIO;
-    private static GameHandler myInstance;
-
+    private GameScreen myGameScreen = GameScreen.getInstance();
+    private InputOutput myIO = InputOutput.getInstance();
+    private static GameHandler myInstance = null;
     private UFO myUFO;
     private Ship myShip;
-    private Missile myMissile;
-    private Photon[] myPhotons;
     private Asteroid[] myAsteroids;
     private Explosion[] myExplosions;
 
     private GameHandler(){
-        this.myGameProperties = GameProperties.getInstance();
-        this.myGameData = GameData.getMyInstance();
-        this.myShapeFactory = ShapeFactory.getInstance();
-        this.myGameFactory = GameFactory.getInstance();
-        this.myStartScreen = StartScreen.getInstance();
-        this.myIO = InputOutput.getInstance();
+        System.out.println("GameHandler");
     }
 
     public static GameHandler getInstance() {
@@ -53,16 +44,10 @@ public class GameHandler {
     }
 
     public void createGameObjects(){
-
-
-        myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(),myStartScreen.getMissleProbability());
-        myShip = myShapeFactory.createShip();
-        myMissile = myShapeFactory.createMissile();
-        myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
-        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(),myStartScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
-
+        myUFO = myShapeFactory.createUFO(myGameScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(), myGameScreen.getMissileProbability());
+        myShip = myShapeFactory.createShip(myGameProperties.getMAX_SHOTS(), myGameScreen.getMaxRockSpeed());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(), myGameScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
-
     }
 
     public void createNewGame() {
@@ -71,19 +56,19 @@ public class GameHandler {
         boolean sound = true;
         boolean detail = true;
 
-        myGame = myGameFactory.createGame(highScore,sound,detail);
+        myGame = myGameFactory.createGame(highScore,sound,detail,this);
         myGameSound = myGameFactory.createGameSound();
 
 
         myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
-        myGame.setHYPER_COUNT(myStartScreen.getHyperCount());
-        myGame.setMAX_ROCK_SPEED(myStartScreen.getMaxRockSpeed());
-        myGame.setMAX_ROCK_SPIN(myStartScreen.getMaxRockSpin());
-        myGame.setMaxRockSpeedTimesFPSPer2(myStartScreen.getMaxRockSpeedTimesFPSPer2());
-        myGame.setMISSLE_COUNT(myStartScreen.getMissleCount());
-        myGame.setSCRAP_COUNT(myStartScreen.getScrapCount());
-        myGame.setMISSLE_PROBABILITY(myStartScreen.getMissleProbability());
-        myGame.setSTORM_PAUSE(myStartScreen.getStormPause());
+        myGame.setHYPER_COUNT(myGameScreen.getHyperCount());
+        myGame.setMAX_ROCK_SPEED(myGameScreen.getMaxRockSpeed());
+        myGame.setMAX_ROCK_SPIN(myGameScreen.getMaxRockSpin());
+        myGame.setMaxRockSpeedTimesFPSPer2(myGameScreen.getMaxRockSpeedTimesFPSPer2());
+        myGame.setMISSILE_COUNT(myGameScreen.getMissileCount());
+        myGame.setSCRAP_COUNT(myGameScreen.getScrapCount());
+        myGame.setMISSILE_PROBABILITY(myGameScreen.getMissileProbability());
+        myGame.setSTORM_PAUSE(myGameScreen.getStormPause());
 
 
 
@@ -115,31 +100,31 @@ public class GameHandler {
 
         try {
             myGameSound.runSound("Crash");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Explosion");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Fire");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Missile");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Saucer");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Thrusters");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
 
             myGameSound.runSound("Warp");
-            myStartScreen.repaint();
+            myGameScreen.repaint();
             Thread.sleep(delay);
         }
         catch (InterruptedException e) {
@@ -148,26 +133,8 @@ public class GameHandler {
 
     }
 
-
-    private int getDirection(){
-        int direction = 0;
-
-        if(myIO.isUp()){
-            direction = 1;
-        }else if(myIO.isDown()){
-            direction = 2;
-        }else if(myIO.isRight()){
-            direction = 3;
-        }else if(myIO.isLeft()){
-            direction = 4;
-        }
-
-        return direction;
-    }
-
     public void updateGame() {
         if (!myGame.isPaused()) {
-
 
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
@@ -228,10 +195,10 @@ public class GameHandler {
                     }
                 case 'h' :
                     if (myGame.getMyShip().isActive() && myGameData.getHyperCounter() <= 0){
-                        int screenWidth = myStartScreen.getWidth();
-                        int screenHeight = myStartScreen.getHeight();
+                        int screenWidth = myGameScreen.getWidth();
+                        int screenHeight = myGameScreen.getHeight();
                         myGame.hyperSpaceShip(screenWidth,screenHeight);
-                        myGameData.setHyperCounter(myStartScreen.getHyperCount());
+                        myGameData.setHyperCounter(myGameScreen.getHyperCount());
                         if (myGame.isSound() && !myGame.isPaused()){
                             myGameSound.startWarpSound();
                         }
@@ -366,5 +333,57 @@ public class GameHandler {
 
     public Explosion[] getExplosions() {
         return myGame.getMyExplosions();
+    }
+
+    public int[] getExplosionCounter() {
+        return myGameData.getExplosionCounter();
+    }
+
+    public int getScore() {
+        return myGameData.getScore();
+    }
+
+    public int getShipsLeft() {
+        return myGameData.getShipsLeft();
+    }
+
+    public int getHighScore() {
+        return myGameData.getHighScore();
+    }
+
+    public boolean isSoundActive() {
+        return myGame.isSound();
+    }
+
+    public boolean isGameActive() {
+        return myGame.isPlaying();
+    }
+
+    @Override
+    public void onSoundAction(String soundAction) {
+
+        switch (soundAction) {
+            case "Missile" :
+                myGameSound.loopMissileSound();
+            case "Explosion" :
+                myGameSound.startExplosionSound(isSoundActive());
+            case "Crash" :
+                myGameSound.startCrashSound(isSoundActive());
+
+            case "Saucer" :
+                myGameSound.stopSound("Saucer");
+            case "StopMissile" :
+                myGameSound.stopSound("Missile");
+        }
+
+
+    }
+
+    public int getTotalClips() {
+        return myGameSound.getClipTotal();
+    }
+
+    public int getLoadedClips() {
+        return myGameSound.getClipsLoaded();
     }
 }

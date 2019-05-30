@@ -4,16 +4,17 @@ public class UFO extends Sprite {
 
     private Missile myMissile;
 
-    private static double MAX_ROCK_SPEED;
-    private static double UFO_POINTS;
-    private static double MAX_SHOTS;
-    private static double MISSLE_PROBABILITY;
-    public UFO(int width, int height, double MAX_ROCK_SPEED, double UFO_POINTS, double MAX_SHOTS, double MISSLE_PROBABILITY, Missile missile){
+    private double MAX_ROCK_SPEED;
+    private double UFO_POINTS;
+    private double MAX_SHOTS;
+    private double MISSILE_PROBABILITY;
+
+    public UFO(int width, int height, double MAX_ROCK_SPEED, double UFO_POINTS, double MAX_SHOTS, double MISSILE_PROBABILITY, Missile missile){
         super(width,height);
         this.MAX_ROCK_SPEED = MAX_ROCK_SPEED;
         this.UFO_POINTS = UFO_POINTS;
         this.MAX_SHOTS = MAX_SHOTS;
-        this.MISSLE_PROBABILITY = MISSLE_PROBABILITY;
+        this.MISSILE_PROBABILITY = MISSILE_PROBABILITY;
         this.myMissile = missile;
     }
 
@@ -60,7 +61,8 @@ public class UFO extends Sprite {
         myMissile.init();
     }
 
-    public void stopMissle() {
+    public void stopMissile() {
         myMissile.stop();
     }
+
 }

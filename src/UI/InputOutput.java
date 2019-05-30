@@ -16,11 +16,9 @@ public class InputOutput implements KeyListener {
     private boolean up    = false;
     private boolean down  = false;
 
-    private static InputOutput myInstance;
-    private GameHandler myGameHandler;
+    private static InputOutput myInstance = null;
 
     private InputOutput(){
-        myGameHandler = GameHandler.getInstance();
 
     }
 
@@ -43,6 +41,7 @@ public class InputOutput implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        GameHandler myGameHandler = GameHandler.getInstance();
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
             setLeft(true);
         }
@@ -61,6 +60,7 @@ public class InputOutput implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        GameHandler myGameHandler = GameHandler.getInstance();
         // Check if any cursor keys where released and set flags.
 
         if (e.getKeyCode() == KeyEvent.VK_LEFT){

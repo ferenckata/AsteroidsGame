@@ -1,11 +1,8 @@
 package src.Tech;
 
 import src.Application.GameHandler;
-import src.Domain.Game;
-import src.Domain.GameObjects.Background;
 import src.UI.GameScreen;
 import src.UI.InputOutput;
-import src.UI.StartScreen;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
@@ -13,19 +10,15 @@ import java.awt.event.ComponentEvent;
 
 public class Runner implements Runnable{
 
-    private static Runner myInstance;
+    private static Runner myInstance = null;
     private static final int DELAY = 20;
 
     // Thread control variables.
-
     private Thread loadThread;
     private Thread loopThread;
-
-    private GameHandler myGameHandler;
-    private Background myBackground;
-    //private StartScreen myStartScreen;
-    private GameScreen myGameScreen;
-    private InputOutput myInputOutput;
+    private GameHandler myGameHandler = GameHandler.getInstance();
+    private GameScreen myGameScreen = GameScreen.getInstance();
+    private InputOutput myInputOutput = InputOutput.getInstance();
 
     private Runner(){
     }
@@ -39,14 +32,6 @@ public class Runner implements Runnable{
 
     public void init (){
         //Creators
-        myGameHandler = GameHandler.getInstance();
-        myBackground = new Background();
-        //myStartScreen = StartScreen.getInstance(myBackground);
-        myInputOutput = InputOutput.getInstance();
-        myGameScreen = GameScreen.getInstance(myBackground);
-
-
-       //myStartScreen.setUpScreen();
         myGameScreen.setUpScreen();
         myInputOutput.setUpIO();
 
@@ -164,8 +149,7 @@ public class Runner implements Runnable{
 
                 myGameScreen.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
                 myGameScreen.setSize(e.getComponent().getWidth(), e.getComponent().getHeight());
-                myBackground.setWidth(e.getComponent().getWidth());
-                myBackground.setHeight(e.getComponent().getHeight());
+                myGameScreen.setUpBackGround(e.getComponent().getWidth(),e.getComponent().getHeight());
                 myGameScreen.repaint();
             }
         });

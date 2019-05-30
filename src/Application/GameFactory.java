@@ -4,7 +4,7 @@ import src.Domain.Game;
 
 public class GameFactory {
 
-    private static GameFactory myInstance;
+    private static GameFactory myInstance = null;
 
     private GameFactory(){
 
@@ -19,8 +19,8 @@ public class GameFactory {
         return myInstance;
     }
 
-    public Game createGame(int highScore, boolean sound, boolean detail) {
-        Game myGame = new Game(highScore,sound,detail);
+    public Game createGame(int highScore, boolean sound, boolean detail, OnGameListener myOnGameListener) {
+        Game myGame = new Game(highScore,sound,detail,myOnGameListener);
         return myGame;
     }
 
