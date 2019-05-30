@@ -269,4 +269,68 @@ public class GameHandler {
     public void actOnKeyRelease() {
         myGameSound.stopThrustersSound();
     }
+
+    public boolean isGameDetail() {
+        return myGame.isDetail();
+    }
+
+    public int getMaxShots() {
+        return myGameProperties.getMaxShots();
+    }
+
+    public Photon[] getPhotons() {
+        return myGame.getMyShip().getMyPhotons();
+    }
+
+    public Missile getMissile() {
+        return myGame.getMyUfo().getMissile();
+    }
+
+    public int getMaxRocks() {
+        return myGameProperties.getMaxRocks();
+    }
+
+    public Asteroid[] getAsteroids() {
+        return myGame.getMyAsteroids();
+    }
+
+    public UFO getUfo() {
+        return myGame.getMyUfo();
+    }
+
+    public int getHyperCounter() {
+        return myGameData.getHyperCounter();
+    }
+
+    public Ship getShip() {
+        return myGame.getMyShip();
+    }
+
+    public boolean isGamePaused() {
+        return myGame.isPaused();
+    }
+
+    public boolean isUpKeyInUse() {
+        return myIO.isUp();
+    }
+
+    public Thruster getFwdThruster() {
+        return myShip.getFwdThruster();
+    }
+
+    public Thruster getRevThruster(){
+        return myShip.getRevThruster();
+    }
+
+    public boolean isDownKeyInUse() {
+        return myIO.isDown();
+    }
+
+    public int getMaxScrap() {
+        return myGameProperties.getMaxScrap();
+    }
+
+    public Explosion[] getExplosions() {
+        return myGame.getMyExplosions();
+    }
 }

@@ -9,8 +9,11 @@ public class Ship extends Sprite{
     private static int SHIP_SPEED_STEP = 0;
     private static int SHIP_ANGLE_STEP = 0;
 
+
     private Thruster fwdThruster;
     private Thruster revThruster;
+
+
     private Photon[] myPhotons;
 
     public Ship(int width, int height){
@@ -166,4 +169,18 @@ public class Ship extends Sprite{
         myPhotons[photonIndex].fire(x,y,angle);
 
     }
+
+    public Photon[] getMyPhotons() {
+        return myPhotons;
+    }
+
+
+    public Thruster getFwdThruster() {
+        return fwdThruster;
+    }
+
+    public Thruster getRevThruster() {
+        return revThruster;
+    }
+
 }

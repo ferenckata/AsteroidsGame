@@ -1,20 +1,26 @@
 package src.UI;
 
 import src.Application.GameHandler;
-import src.Domain.GameObjects.Background;
+import src.Domain.Data.FontData;
+import src.Domain.GameObjects.*;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameScreen extends JPanel {
 
+    private static String copyName = "src.Asteroids";
+    private static String copyVers = "Version 1.3";
+    private static String copyInfo = "Copyright 1998-2001 by Mike Hall";
+    private static String copyLink = "http://www.brainjar.com";
+
     private static final int DELAY = 20;             // Milliseconds between screen and
     public static final int FPS   =                 // the resulting frame rate.
             Math.round(1000 / getDELAY());
 
     private static final int SCRAP_COUNT  = 2 * FPS;  // Timer counter starting values
-    private final int HYPER_COUNT  = 3 * FPS;  // calculated using number of
-    private static final int MISSLE_COUNT = 4 * FPS;  // seconds x frames per second.
+    private static final int HYPER_COUNT  = 3 * FPS;  // calculated using number of
+    private static final int MISSILE_COUNT = 4 * FPS;  // seconds x frames per second.
     private static final int STORM_PAUSE  = 2 * FPS;
 
     // Off screen image.
@@ -27,6 +33,7 @@ public class GameScreen extends JPanel {
 
     private GameScreen(Background myBackground){
         this.myBackground = myBackground;
+        this.myGameHandler = GameHandler.getInstance();
     }
 
     public static GameScreen getInstance(Background myBackground){
@@ -80,92 +87,101 @@ public class GameScreen extends JPanel {
 
         offGraphics.setColor(Color.black);
         offGraphics.fillRect(0, 0, d.width, d.height);
-        if (my) {
+        if (myGameHandler.isGameDetail()) {
             offGraphics.setColor(Color.white);
-            for (i = 0; i < numStars; i++)
+            Point[] stars = myBackground.getStars();
+            for (i = 0; i < stars.length; i++)
                 offGraphics.drawLine(stars[i].x, stars[i].y, stars[i].x, stars[i].y);
         }
 
         // Draw photon bullets.
 
         offGraphics.setColor(Color.white);
-        for (i = 0; i < MAX_SHOTS; i++)
-            if (photons[i].active)
-                offGraphics.drawPolygon(photons[i].sprite);
+        Photon[] photons = myGameHandler.getPhotons();
+        for (i = 0; i < myGameHandler.getMaxShots(); i++)
+            if (photons[i].isActive())
+                offGraphics.drawPolygon(photons[i].getSprite());
 
         // Draw the guided missle, counter is used to quickly fade color to black
         // when near expiration.
 
-        c = Math.min(missleCounter * 24, 255);
+        c = Math.min(MISSILE_COUNT * 24, 255);
         offGraphics.setColor(new Color(c, c, c));
-        if (missle.active) {
-            offGraphics.drawPolygon(missle.sprite);
-            offGraphics.drawLine(missle.sprite.xpoints[missle.sprite.npoints - 1], missle.sprite.ypoints[missle.sprite.npoints - 1],
-                    missle.sprite.xpoints[0], missle.sprite.ypoints[0]);
+        if (myGameHandler.getMissile().isActive()) {
+            Missile myMissile = myGameHandler.getMissile();
+            offGraphics.drawPolygon(myMissile.getSprite());
+            offGraphics.drawLine(myGameHandler.getMissile().getSprite().xpoints[myMissile.getSprite().npoints - 1], myMissile.getSprite().ypoints[myMissile.getSprite().npoints - 1],
+                    myMissile.getSprite().xpoints[0], myMissile.getSprite().ypoints[0]);
         }
 
         // Draw the asteroids.
 
-        for (i = 0; i < MAX_ROCKS; i++)
-            if (asteroids[i].active) {
-                if (detail) {
+        Asteroid[] asteroids = myGameHandler.getAsteroids();
+        for (i = 0; i < myGameHandler.getMaxRocks(); i++)
+            if (asteroids[i].isActive()) {
+                if (myGameHandler.isGameDetail()) {
                     offGraphics.setColor(Color.black);
-                    offGraphics.fillPolygon(asteroids[i].sprite);
+                    offGraphics.fillPolygon(asteroids[i].getSprite());
                 }
                 offGraphics.setColor(Color.white);
-                offGraphics.drawPolygon(asteroids[i].sprite);
-                offGraphics.drawLine(asteroids[i].sprite.xpoints[asteroids[i].sprite.npoints - 1], asteroids[i].sprite.ypoints[asteroids[i].sprite.npoints - 1],
-                        asteroids[i].sprite.xpoints[0], asteroids[i].sprite.ypoints[0]);
+                offGraphics.drawPolygon(asteroids[i].getSprite());
+                offGraphics.drawLine(asteroids[i].getSprite().xpoints[asteroids[i].getSprite().npoints - 1], asteroids[i].getSprite().ypoints[asteroids[i].getSprite().npoints - 1],
+                        asteroids[i].getSprite().xpoints[0], asteroids[i].getSprite().ypoints[0]);
             }
 
         // Draw the flying saucer.
 
-        if (ufo.active) {
-            if (detail) {
+        UFO myUfo = myGameHandler.getUfo();
+        if (myUfo.isActive()) {
+            if (myGameHandler.isGameDetail()) {
                 offGraphics.setColor(Color.black);
-                offGraphics.fillPolygon(ufo.sprite);
+                offGraphics.fillPolygon(myUfo.getSprite());
             }
             offGraphics.setColor(Color.white);
-            offGraphics.drawPolygon(ufo.sprite);
-            offGraphics.drawLine(ufo.sprite.xpoints[ufo.sprite.npoints - 1], ufo.sprite.ypoints[ufo.sprite.npoints - 1],
-                    ufo.sprite.xpoints[0], ufo.sprite.ypoints[0]);
+            offGraphics.drawPolygon(myUfo.getSprite());
+            offGraphics.drawLine(myUfo.getSprite().xpoints[myUfo.getSprite().npoints - 1], myUfo.getSprite().ypoints[myUfo.getSprite().npoints - 1],
+                    myUfo.getSprite().xpoints[0], myUfo.getSprite().ypoints[0]);
         }
 
         // Draw the ship, counter is used to fade color to white on hyperspace.
 
-        c = 255 - (255 / HYPER_COUNT) * hyperCounter;
-        if (ship.active) {
-            if (detail && hyperCounter == 0) {
+        c = 255 - (255 / HYPER_COUNT) * myGameHandler.getHyperCounter();
+        Ship myShip = myGameHandler.getShip();
+        if (myShip.isActive()) {
+            if (myGameHandler.isGameDetail() && myGameHandler.getHyperCounter() == 0) {
                 offGraphics.setColor(Color.black);
-                offGraphics.fillPolygon(ship.sprite);
+                offGraphics.fillPolygon(myShip.getSprite());
             }
             offGraphics.setColor(new Color(c, c, c));
-            offGraphics.drawPolygon(ship.sprite);
+            offGraphics.drawPolygon(myShip.getSprite());
 
-            offGraphics.drawLine(ship.sprite.xpoints[ship.sprite.npoints - 1], ship.sprite.ypoints[ship.sprite.npoints - 1],
-                    ship.sprite.xpoints[0], ship.sprite.ypoints[0]);
+            offGraphics.drawLine(myShip.getSprite().xpoints[myShip.getSprite().npoints - 1], myShip.getSprite().ypoints[myShip.getSprite().npoints - 1],
+                    myShip.getSprite().xpoints[0], myShip.getSprite().ypoints[0]);
 
             // Draw thruster exhaust if thrusters are on. Do it randomly to get a
             // flicker effect.
 
-            if (!paused && detail && Math.random() < 0.5) {
-                if (up) {
-                    offGraphics.drawPolygon(fwdThruster.sprite);
-                    offGraphics.drawLine(fwdThruster.sprite.xpoints[fwdThruster.sprite.npoints - 1], fwdThruster.sprite.ypoints[fwdThruster.sprite.npoints - 1],
-                            fwdThruster.sprite.xpoints[0], fwdThruster.sprite.ypoints[0]);
+            Thruster fwdThruster = myGameHandler.getFwdThruster();
+            Thruster revThruster = myGameHandler.getRevThruster();
+            if (!myGameHandler.isGamePaused() && myGameHandler.isGameDetail() && Math.random() < 0.5) {
+                if (myGameHandler.isUpKeyInUse()) {
+                    offGraphics.drawPolygon(fwdThruster.getSprite());
+                    offGraphics.drawLine(fwdThruster.getSprite().xpoints[fwdThruster.getSprite().npoints - 1], fwdThruster.getSprite().ypoints[fwdThruster.getSprite().npoints - 1],
+                            fwdThruster.getSprite().xpoints[0], fwdThruster.getSprite().ypoints[0]);
                 }
-                if (down) {
-                    offGraphics.drawPolygon(revThruster.sprite);
-                    offGraphics.drawLine(revThruster.sprite.xpoints[revThruster.sprite.npoints - 1], revThruster.sprite.ypoints[revThruster.sprite.npoints - 1],
-                            revThruster.sprite.xpoints[0], revThruster.sprite.ypoints[0]);
+                if (myGameHandler.isDownKeyInUse()) {
+                    offGraphics.drawPolygon(revThruster.getSprite());
+                    offGraphics.drawLine(revThruster.getSprite().xpoints[revThruster.getSprite().npoints - 1], revThruster.getSprite().ypoints[revThruster.getSprite().npoints - 1],
+                            revThruster.getSprite().xpoints[0], revThruster.getSprite().ypoints[0]);
                 }
             }
         }
 
         // Draw any explosion debris, counters are used to fade color to black.
 
-        for (i = 0; i < MAX_SCRAP; i++)
-            if (explosions[i].active) {
+        Explosion[] explosions = myGameHandler.getExplosions();
+        for (i = 0; i < myGameHandler.getMaxScrap(); i++)
+            if (explosions[i].isActive()) {
                 c = (255 / SCRAP_COUNT) * explosionCounter [i];
                 offGraphics.setColor(new Color(c, c, c));
                 offGraphics.drawPolygon(explosions[i].sprite);
@@ -241,8 +257,8 @@ public class GameScreen extends JPanel {
         return HYPER_COUNT;
     }
 
-    public static int getMissleCount() {
-        return MISSLE_COUNT;
+    public static int getMissileCount() {
+        return MISSILE_COUNT;
     }
 
     public static int getStormPause() {

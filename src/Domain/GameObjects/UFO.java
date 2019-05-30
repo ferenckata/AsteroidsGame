@@ -2,6 +2,8 @@ package src.Domain.GameObjects;
 
 public class UFO extends Sprite {
 
+    private Missile myMissile;
+
     public UFO(int width, int height){
         super(width,height);
     }
@@ -19,6 +21,10 @@ public class UFO extends Sprite {
     @Override
     public void stop() {
 
+    }
+
+    public Missile getMissile(){
+        return myMissile;
     }
 
 }

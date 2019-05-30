@@ -24,7 +24,7 @@ public class GameData {
     private int ufoCounter;       // Timer counter used to track each flying saucer pass.
 
     // Missile data.
-    private int missleCounter;    // Counter for life of missle.
+    private int missileCounter;    // Counter for life of missle.
 
     // Asteroid data.
     private boolean[] asteroidIsSmall;    // Asteroid size flag.
@@ -60,12 +60,12 @@ public class GameData {
         this.score = score;
     }
 
-    public int getMissleCounter() {
-        return missleCounter;
+    public int getMissileCounter() {
+        return missileCounter;
     }
 
-    public void setMissleCounter(int missleCounter) {
-        this.missleCounter = missleCounter;
+    public void setMissileCounter(int missileCounter) {
+        this.missileCounter = missileCounter;
     }
 
     public int getHighScore() {
