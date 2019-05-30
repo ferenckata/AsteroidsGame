@@ -38,7 +38,6 @@ public class Game {
         myPhotons = new Photon[myGameProperties.getMaxShots()];
         myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
         myExplosions = new Explosion[myGameProperties.getMaxScrap()];
-
     }
 
 
@@ -131,13 +130,13 @@ public class Game {
         this.myGameData = myGameData;
     }
 
-    public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions) {
+    public void initGame(Ship ship, UFO ufo,Asteroid[] asteroids, Explosion[] explosions) {
 
         // Initialize game data and sprites.
 
         myGameData.setScore(0);
         myGameData.setShipsLeft(MAX_SHIPS);
-        myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
+        myGameData.setAsteroidsSpeed(GameProperties.getInstance().getMIN_ROCK_SPEED());
         myGameData.setNewShipScore(NEW_SHIP_POINTS);
         myGameData.setNewUfoScore(NEW_UFO_POINTS);
 
@@ -145,9 +144,6 @@ public class Game {
         myShip.init();
 
         myGameData.setHyperCounter(0);
-
-        this.myPhotons = photons;
-        initPhotons();
 
         stopUfo();
         stopMissile();
@@ -182,10 +178,7 @@ public class Game {
     }
 
     public void initPhotons() {
-        for (Photon photon: myPhotons) {
-            photon.init();
-            photoIndex = 0;
-        }
+
     }
 
     public void stopShip() {
@@ -293,4 +286,12 @@ public class Game {
     }
 
 
+    public void shipFire(int photonIndex) {
+        myShip.firePhotons(photonIndex);
+    }
+
+    public void hyperSpaceShip(int screenWidth, int screenHeight) {
+        myShip.setX(Math.random() * screenWidth);
+        myShip.setY(Math.random() * screenHeight);
+    }
 }

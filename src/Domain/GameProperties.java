@@ -31,15 +31,25 @@ public class GameProperties {
     static final int    MAX_ROCK_SIDES =  16; // speed and rotation.
     static final int    MIN_ROCK_SIZE  =  20;
     static final int    MAX_ROCK_SIZE  =  40;
-    static final double MIN_ROCK_SPEED =  40.0 / FPS;
-    static final double MAX_ROCK_SPEED = 240.0 / FPS;
+
+    public double getMIN_ROCK_SPEED() {
+        return MIN_ROCK_SPEED;
+    }
+
+    private final double MIN_ROCK_SPEED =  40.0 / FPS;
+
+    public double getMAX_ROCK_SPEED() {
+        return MAX_ROCK_SPEED;
+    }
+
+    private final double MAX_ROCK_SPEED = 240.0 / FPS;
     static final double MAX_ROCK_SPIN  = Math.PI / FPS;
 
     // Ship's rotation and acceleration rates and maximum speed.
 
-    static final double SHIP_ANGLE_STEP = Math.PI / FPS;
-    static final double SHIP_SPEED_STEP = 15.0 / FPS;
-    static final double MAX_SHIP_SPEED  = 1.25 * MAX_ROCK_SPEED;
+    private final double SHIP_ANGLE_STEP = Math.PI / FPS;
+    private final double SHIP_SPEED_STEP = 15.0 / FPS;
+    private final double MAX_SHIP_SPEED  = 1.25 * MAX_ROCK_SPEED;
 
     // Probablility of flying saucer firing a missle during any given frame
     // (other conditions must be met).

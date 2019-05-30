@@ -1,18 +1,16 @@
 package src.Application;
 
-import src.Domain.Data.SoundData;
-
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.datatransfer.ClipboardOwner;
 import java.io.File;
 import java.io.IOException;
 
 public class Sound {
 
     private static Sound myInstance;
-    private SoundData mySoundData;
     private int clipTotal;
     private int clipsLoaded;
     private Clip crashSound;
@@ -23,8 +21,13 @@ public class Sound {
     private Clip thrustersSound;
     private Clip warpSound;
 
+    // Flags for looping sound clips.
+
+    private boolean thrustersPlaying;
+    private boolean saucerPlaying;
+    private boolean missilePlaying;
+
     private Sound(){
-        mySoundData = SoundData.getInstance();
         clipTotal = 0;
         clipsLoaded = 0;
     }
@@ -35,15 +38,6 @@ public class Sound {
         }
         return myInstance;
     }
-
-
-    public void stopThrustersSound() {
-    }
-
-
-    public void setThrustersPlaying(boolean b) {
-    }
-
 
     public void loadSound(String clip) throws LineUnavailableException, UnsupportedAudioFileException, IOException{
         Clip audioClip = AudioSystem.getClip();
@@ -99,5 +93,149 @@ public class Sound {
         }
         clipsLoaded++;
 
+    }
+
+    public void stopThrustersSound() {
+
+        if (isThrustersPlaying()){
+            thrustersSound.stop();
+            thrustersPlaying = false;
+        }
+    }
+
+
+    public void setThrustersPlaying(boolean b) {
+    }
+
+
+    public boolean isThrustersPlaying() {
+        return thrustersPlaying;
+    }
+
+    public boolean isSaucerPlaying() {
+        return saucerPlaying;
+    }
+
+    public void setSaucerPlaying(boolean saucerPlaying) {
+        this.saucerPlaying = saucerPlaying;
+    }
+
+    public boolean isMissilePlaying() {
+        return missilePlaying;
+    }
+
+    public void setMissilePlaying(boolean missilePlaying) {
+        this.missilePlaying = missilePlaying;
+    }
+
+    public Clip getCrashSound() {
+        return crashSound;
+    }
+
+    public void setCrashSound(Clip crashSound) {
+        this.crashSound = crashSound;
+    }
+
+    public Clip getExplosionSound() {
+        return explosionSound;
+    }
+
+    public void setExplosionSound(Clip explosionSound) {
+        this.explosionSound = explosionSound;
+    }
+
+    public Clip getFireSound() {
+        return fireSound;
+    }
+
+    public void setFireSound(Clip fireSound) {
+        this.fireSound = fireSound;
+    }
+
+    public Clip getMissileSound() {
+        return missileSound;
+    }
+
+    public void setMissileSound(Clip missileSound) {
+        this.missileSound = missileSound;
+    }
+
+    public Clip getSaucerSound() {
+        return saucerSound;
+    }
+
+    public void setSaucerSound(Clip saucerSound) {
+        this.saucerSound = saucerSound;
+    }
+
+    public Clip getThrustersSound() {
+        return thrustersSound;
+    }
+
+    public void setThrustersSound(Clip thrustersSound) {
+        this.thrustersSound = thrustersSound;
+    }
+
+    public Clip getWarpSound() {
+        return warpSound;
+    }
+
+    public void setWarpSound(Clip warpSound) {
+        this.warpSound = warpSound;
+    }
+
+    public void loopThrustersSound() {
+        thrustersSound.setFramePosition(0);
+        thrustersSound.stop();
+        thrustersSound.loop(Clip.LOOP_CONTINUOUSLY);
+        thrustersPlaying = true;
+    }
+    public void startFireSound(){
+        fireSound.setFramePosition(0);
+        fireSound.start();
+    }
+
+    public void startWarpSound() {
+        warpSound.setFramePosition(0);
+        warpSound.start();
+    }
+
+    public void loopMissileSound() {
+        missileSound.setFramePosition(0);
+        missileSound.start();
+        missileSound.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    public void loopSaucerSound() {
+        saucerSound.setFramePosition(0);
+        saucerSound.start();
+        saucerSound.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    public void stopSound(String sound) {
+        switch (sound) {
+            case "Crash" :
+                crashSound.stop();
+            case "Explosion" :
+                explosionSound.stop();
+            case "Fire" :
+                fireSound.stop();
+            case "Missile" :
+                missileSound.stop();
+            case "Saucer" :
+                saucerSound.stop();
+            case "Thrusters" :
+                thrustersSound.stop();
+            case "Warp" :
+                warpSound.stop();
+            case "AllSounds" :
+                crashSound.stop();
+                explosionSound.stop();
+                fireSound.stop();
+                missileSound.stop();
+                saucerSound.stop();
+                thrustersSound.stop();
+                warpSound.stop();
+        }
     }
 }

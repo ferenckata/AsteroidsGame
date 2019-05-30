@@ -6,8 +6,7 @@ import src.Domain.GameObjects.*;
 import src.UI.InputOutput;
 import src.UI.StartScreen;
 
-import javax.sound.sampled.AudioSystem;
-import java.io.File;
+import java.awt.event.KeyEvent;
 
 public class GameHandler {
 
@@ -56,9 +55,7 @@ public class GameHandler {
     public void createGameObjects(){
 
         myUFO = myShapeFactory.createUFO();
-        myShip = myShapeFactory.createShip();
-        myMissile = myShapeFactory.createMissile();
-        myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
+        myShip = myShapeFactory.createShip(myGameProperties.getMaxShots(),myGameProperties.getMAX_ROCK_SPEED());
         myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks());
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
 
@@ -73,7 +70,7 @@ public class GameHandler {
         myGame = myGameFactory.createGame(highScore,sound,detail);
         myGameSound = myGameFactory.createGameSound();
 
-        myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions);
+        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
 
         if (isSoundLoaded){
             myGameSound.stopThrustersSound();
@@ -138,26 +135,6 @@ public class GameHandler {
 
     public void updateGame() {
         if (!myGame.isPaused()) {
-
-            // Move and process all sprites.
-
-            // move ship
-
-            int direction = 0;
-
-            if(myIO.isUp()){
-                direction = 1;
-            }else if(myIO.isDown()){
-                direction = 2;
-            }else if(myIO.isRight()){
-                direction = 3;
-            }else if(myIO.isLeft()){
-                direction = 4;
-            }
-
-            myGame.updateGame(direction, myStartScreen.getHyperCount());
-
-
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
@@ -173,5 +150,123 @@ public class GameHandler {
                 }
             }
         }
+    }
+
+
+    public void actOnKeyPressed(KeyEvent keyEvent) {
+
+        if (keyEvent.isActionKey()){
+            switch (keyEvent.getKeyCode()){
+                case KeyEvent.VK_UP :
+                    myGame.updateGame(1,myStartScreen.getHyperCount());
+                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
+                        if (myGame.isSound() && !myGame.isPaused()){
+                            myGameSound.loopThrustersSound();
+                        }
+                    }
+                case KeyEvent.VK_DOWN :
+                    myGame.updateGame(2,myStartScreen.getHyperCount());
+                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
+                        if (myGame.isSound() && !myGame.isPaused()){
+                            myGameSound.loopThrustersSound();
+                        }
+                    }
+                case KeyEvent.VK_RIGHT :
+                    myGame.updateGame(4,myStartScreen.getHyperCount());
+                case KeyEvent.VK_LEFT :
+                    myGame.updateGame(3,myStartScreen.getHyperCount());
+
+            }
+        } else {
+            char keyChar = Character.toLowerCase(keyEvent.getKeyChar());
+            switch (keyChar) {
+                case ' ' :
+                    if (myGame.getMyShip().isActive()){
+                        if (myGame.isSound() && !myGame.isPaused()){
+                            myGameSound.startFireSound();
+                        }
+                        myGameData.setPhotonTime(System.currentTimeMillis());
+                        myGameData.setPhotonIndex(myGameData.getPhotonIndex()+1);
+                        if (myGameData.getPhotonIndex() >= myGameProperties.getMaxShots()){
+                            myGameData.setPhotonIndex(0);
+                        }
+                        myGame.shipFire(myGameData.getPhotonIndex());
+                    }
+                case 'h' :
+                    if (myGame.getMyShip().isActive() && myGameData.getHyperCounter() <= 0){
+                        int screenWidth = myStartScreen.getWidth();
+                        int screenHeight = myStartScreen.getHeight();
+                        myGame.hyperSpaceShip(screenWidth,screenHeight);
+                        myGameData.setHyperCounter(myStartScreen.getHyperCount());
+                        if (myGame.isSound() && !myGame.isPaused()){
+                            myGameSound.startWarpSound();
+                        }
+                    }
+
+                case 'p' :
+                    if (myGame.isPaused()){
+                        if (myGame.isSound()){
+                            if (myGameSound.isMissilePlaying()){
+                                myGameSound.loopMissileSound();
+                            }
+                            if (myGameSound.isSaucerPlaying()){
+                                myGameSound.loopSaucerSound();
+                            }
+                            if (myGameSound.isThrustersPlaying()){
+                                myGameSound.loopThrustersSound();
+                            }
+                        }
+                        myGame.setPaused(false);
+                    } else {
+                        if (myGameSound.isMissilePlaying()){
+                            myGameSound.stopSound("Missile");
+                        }
+                        if (myGameSound.isMissilePlaying()){
+                            myGameSound.stopSound("Saucer");
+                        }
+                        if (myGameSound.isThrustersPlaying()){
+                            myGameSound.stopSound("Thrusters");
+                        }
+                        myGame.setPaused(true);
+                    }
+                case 'm' :
+                    if (isSoundLoaded){
+                        if (myGame.isSound()){
+                            myGameSound.stopSound("AllSounds");
+                            myGame.setSound(false);
+                        } else {
+                            if (myGameSound.isMissilePlaying() && !myGame.isPaused()){
+                                myGameSound.loopMissileSound();
+                            }
+                            if (myGameSound.isSaucerPlaying() && !myGame.isPaused()){
+                                myGameSound.loopSaucerSound();
+                            }
+                            if (myGameSound.isThrustersPlaying() && !myGame.isPaused()){
+                                myGameSound.loopMissileSound();
+                            }
+                            myGame.setSound(true);
+                        }
+                    }
+
+                case 'd' :
+                    if (myGame.isDetail()){
+                        myGame.setDetail(false);
+                    } else {
+                        myGame.setDetail(true);
+                    }
+                case 's' :
+                    if (isSoundLoaded && !myGame.isPlaying()){
+                        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
+                    }
+                case 'x' :
+                    if (isSoundLoaded){
+                        myGame.endGame();
+                    }
+            }
+        }
+    }
+
+    public void actOnKeyRelease() {
+        myGameSound.stopThrustersSound();
     }
 }

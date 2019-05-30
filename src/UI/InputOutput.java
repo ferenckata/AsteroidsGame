@@ -1,5 +1,7 @@
 package src.UI;
 
+import src.Application.GameHandler;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -15,8 +17,10 @@ public class InputOutput implements KeyListener {
     private boolean down  = false;
 
     private static InputOutput myInstance;
+    private GameHandler myGameHandler;
 
     private InputOutput(){
+        myGameHandler = GameHandler.getInstance();
 
     }
 
@@ -38,35 +42,47 @@ public class InputOutput implements KeyListener {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        // Check if any cursor keys have been pressed and set flags.
-
-        if (e.getKeyCode() == KeyEvent.VK_LEFT)
+    public void keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
             setLeft(true);
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+        }
+        if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
             setRight(true);
-        if (e.getKeyCode() == KeyEvent.VK_UP)
+        }
+        if (keyEvent.getKeyCode() == KeyEvent.VK_UP){
             setUp(true);
-        if (e.getKeyCode() == KeyEvent.VK_DOWN)
+        }
+        if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN){
             setDown(true);
+        }
 
-        //ToDo: remaining elements in Asteroids godclass
+        myGameHandler.actOnKeyPressed(keyEvent);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         // Check if any cursor keys where released and set flags.
 
-        if (e.getKeyCode() == KeyEvent.VK_LEFT)
+        if (e.getKeyCode() == KeyEvent.VK_LEFT){
             setLeft(false);
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-            setRight(false);
-        if (e.getKeyCode() == KeyEvent.VK_UP)
-            setUp(false);
-        if (e.getKeyCode() == KeyEvent.VK_DOWN)
-            setDown(false);
 
-        //ToDo: thruster sound spearation, remaining in Asteroids godclass
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT){
+            setRight(false);
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_UP){
+            setUp(false);
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            setDown(false);
+        }
+
+        if (!up || !down) {
+            myGameHandler.actOnKeyRelease();
+
+        }
     }
 
     public boolean isLeft() {

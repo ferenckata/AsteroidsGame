@@ -37,7 +37,7 @@ public class ShapeFactory {
         return ufo;
     }
 
-    public Ship createShip() {
+    public Ship createShip(int MAX_SHOTS,double MAX_ROCK_SPEED) {
 
         Ship ship = new Ship(myBackground.getWidth(), myBackground.getHeight());
         ship.getShape().addPoint(0, -10);
@@ -59,6 +59,9 @@ public class ShapeFactory {
         revThruster.getShape().addPoint(2, 20);
         revThruster.getShape().addPoint(0, 14);
 
+        Photon[] photons = createPhotons(MAX_SHOTS,MAX_ROCK_SPEED);
+
+        ship.setMyPhotons(photons);
         ship.setFwdThruster(fwdThruster);
         ship.setRevThruster(revThruster);
 
@@ -68,23 +71,23 @@ public class ShapeFactory {
 
     public Missile createMissile() {
 
-        Missile missle = new Missile(myBackground.getWidth(), myBackground.getHeight());
-        missle.getShape().addPoint(0, -4);
-        missle.getShape().addPoint(1, -3);
-        missle.getShape().addPoint(1, 3);
-        missle.getShape().addPoint(2, 4);
-        missle.getShape().addPoint(-2, 4);
-        missle.getShape().addPoint(-1, 3);
-        missle.getShape().addPoint(-1, -3);
+        Missile missile = new Missile(myBackground.getWidth(), myBackground.getHeight());
+        missile.getShape().addPoint(0, -4);
+        missile.getShape().addPoint(1, -3);
+        missile.getShape().addPoint(1, 3);
+        missile.getShape().addPoint(2, 4);
+        missile.getShape().addPoint(-2, 4);
+        missile.getShape().addPoint(-1, 3);
+        missile.getShape().addPoint(-1, -3);
 
-        return missle;
+        return missile;
     }
 
-    public Photon[] createPhotons(int MAX_SHOTS) {
+    public Photon[] createPhotons(int MAX_SHOTS, double MAX_ROCK_SPEED) {
         Photon[] photons = new Photon[MAX_SHOTS];
 
         for (int i = 0; i < MAX_SHOTS; i++) {
-            photons[i] = new Photon(myBackground.getWidth(), myBackground.getHeight());
+            photons[i] = new Photon(myBackground.getWidth(), myBackground.getHeight(),MAX_ROCK_SPEED);
             photons[i].getShape().addPoint(1, 1);
             photons[i].getShape().addPoint(1, -1);
             photons[i].getShape().addPoint(-1, 1);
