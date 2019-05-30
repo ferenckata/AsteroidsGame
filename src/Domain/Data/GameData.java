@@ -34,6 +34,7 @@ public class GameData {
 
     // Explosion data.
     private int[] explosionCounter;  // Time counters for explosions.
+
     private int   explosionIndex;                         // Next available explosion sprite.
 
     private static GameData myInstance;
@@ -50,6 +51,22 @@ public class GameData {
             myInstance = new GameData();
         }
         return myInstance;
+    }
+
+    public int[] getExplosionCounter() {
+        return explosionCounter;
+    }
+
+    public void setExplosionCounter(int i, int num) {
+        this.explosionCounter[i] = num;
+    }
+
+    public int getExplosionIndex() {
+        return explosionIndex;
+    }
+
+    public void setExplosionIndex(int explosionIndex) {
+        this.explosionIndex = explosionIndex;
     }
 
     public int getScore() {
@@ -162,5 +179,13 @@ public class GameData {
 
     public int getAsteroidsCounter() {
         return asteroidsCounter;
+    }
+
+    public void setAsteroidsCounter(int asteroidsCounter) {
+        this.asteroidsCounter = asteroidsCounter;
+    }
+
+    public void setAsteroidsLeft(int asteroidsLeft) {
+        this.asteroidsLeft = asteroidsLeft;
     }
 }

@@ -22,8 +22,9 @@ public class ShapeFactory {
     }
 
 
-    public UFO createUFO(){
-        UFO ufo = new UFO(myBackground.getWidth(), myBackground.getHeight());
+    public UFO createUFO(double MAX_ROCK_SPEED, double UFO_POINTS, double MAX_SHOTS, double MISSLE_PROBABILITY){
+        Missile missile = new Missile(myBackground.getWidth(), myBackground.getHeight());
+        UFO ufo = new UFO(myBackground.getWidth(), myBackground.getHeight(), MAX_ROCK_SPEED, UFO_POINTS, MAX_SHOTS, MISSLE_PROBABILITY, missile);
         ufo.getShape().addPoint(-15, 0);
         ufo.getShape().addPoint(-10, -5);
         ufo.getShape().addPoint(-5, -5);
@@ -97,11 +98,11 @@ public class ShapeFactory {
         return photons;
     }
 
-    public Asteroid[] createAsteroids(int MAX_ROCKS){
+    public Asteroid[] createAsteroids(int MAX_ROCKS, double MIN_ROCK_SIDES, double MAX_ROCK_SIDES, int MIN_ROCK_SIZE, int MAX_ROCK_SIZE, double MAX_ROCK_SPIN, double asteroidsSpeed){
         Asteroid[] asteroids = new Asteroid[MAX_ROCKS];
 
         for (int i = 0; i < MAX_ROCKS; i++)
-            asteroids[i] = new Asteroid(myBackground.getWidth(), myBackground.getHeight());
+            asteroids[i] = new Asteroid(myBackground.getWidth(), myBackground.getHeight(), MIN_ROCK_SIDES, MAX_ROCK_SIDES, MIN_ROCK_SIZE, MAX_ROCK_SIZE, MAX_ROCK_SPIN, asteroidsSpeed);
 
         return asteroids;
     }

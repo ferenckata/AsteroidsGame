@@ -86,7 +86,7 @@ public class Ship extends Sprite{
 
     @Override
     public void stop() {
-
+        isActive = false;
     }
 
     public void move(int direction){
