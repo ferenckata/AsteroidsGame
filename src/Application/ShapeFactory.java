@@ -95,11 +95,11 @@ public class ShapeFactory {
         return photons;
     }
 
-    public Asteroid[] createAsteroids(int MAX_ROCKS){
+    public Asteroid[] createAsteroids(int MAX_ROCKS, double MIN_ROCK_SIDES, double MAX_ROCK_SIDES, int MIN_ROCK_SIZE, int MAX_ROCK_SIZE, double MAX_ROCK_SPIN, double asteroidsSpeed){
         Asteroid[] asteroids = new Asteroid[MAX_ROCKS];
 
         for (int i = 0; i < MAX_ROCKS; i++)
-            asteroids[i] = new Asteroid(myBackground.getWidth(), myBackground.getHeight());
+            asteroids[i] = new Asteroid(myBackground.getWidth(), myBackground.getHeight(), MIN_ROCK_SIDES, MAX_ROCK_SIDES, MIN_ROCK_SIZE, MAX_ROCK_SIZE, MAX_ROCK_SPIN, asteroidsSpeed);
 
         return asteroids;
     }

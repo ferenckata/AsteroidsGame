@@ -18,6 +18,18 @@ public class Game {
 
     private Sound gameSound;
 
+    private double MAX_ROCK_SPIN;
+    private double MAX_ROCK_SPEED;
+
+    private int SCRAP_COUNT;
+    private int MISSLE_COUNT;
+    private int HYPER_COUNT;
+
+    private int STORM_PAUSE;
+
+    private double MISSLE_PROBABILITY;
+    private double MaxRockSpeedTimesFPSPer2;
+
     // Sprite objects.
 
     private Ship myShip;
@@ -41,6 +53,85 @@ public class Game {
 
     }
 
+    public double getMISSLE_PROBABILITY() {
+        return MISSLE_PROBABILITY;
+    }
+
+    public void setMISSLE_PROBABILITY(double MISSLE_PROBABILITY) {
+        this.MISSLE_PROBABILITY = MISSLE_PROBABILITY;
+    }
+
+    public double getMaxRockSpeedTimesFPSPer2() {
+        return MaxRockSpeedTimesFPSPer2;
+    }
+
+    public void setMaxRockSpeedTimesFPSPer2(double maxRockSpeedTimesFPSPer2) {
+        MaxRockSpeedTimesFPSPer2 = maxRockSpeedTimesFPSPer2;
+    }
+
+    public int getSTORM_PAUSE() {
+        return STORM_PAUSE;
+    }
+
+    public void setSTORM_PAUSE(int STORM_PAUSE) {
+        this.STORM_PAUSE = STORM_PAUSE;
+    }
+
+    public int getMISSLE_COUNT() {
+        return MISSLE_COUNT;
+    }
+
+    public void setMISSLE_COUNT(int MISSLE_COUNT) {
+        this.MISSLE_COUNT = MISSLE_COUNT;
+    }
+
+    public int getHYPER_COUNT() {
+        return HYPER_COUNT;
+    }
+
+    public void setHYPER_COUNT(int HYPER_COUNT) {
+        this.HYPER_COUNT = HYPER_COUNT;
+    }
+
+    public int getPhotoIndex() {
+        return photoIndex;
+    }
+
+    public void setPhotoIndex(int photoIndex) {
+        this.photoIndex = photoIndex;
+    }
+
+    public Sound getGameSound() {
+        return gameSound;
+    }
+
+    public void setGameSound(Sound gameSound) {
+        this.gameSound = gameSound;
+    }
+
+    public double getMAX_ROCK_SPIN() {
+        return MAX_ROCK_SPIN;
+    }
+
+    public void setMAX_ROCK_SPIN(double MAX_ROCK_SPIN) {
+        this.MAX_ROCK_SPIN = MAX_ROCK_SPIN;
+    }
+
+    public double getMAX_ROCK_SPEED() {
+        return MAX_ROCK_SPEED;
+    }
+
+    public void setMAX_ROCK_SPEED(double MAX_ROCK_SPEED) {
+        this.MAX_ROCK_SPEED = MAX_ROCK_SPEED;
+    }
+
+    public int getSCRAP_COUNT() {
+        return SCRAP_COUNT;
+    }
+
+    public void setSCRAP_COUNT(int SCRAP_COUNT) {
+        this.SCRAP_COUNT = SCRAP_COUNT;
+    }
 
 
     public boolean isPaused() {
@@ -150,7 +241,7 @@ public class Game {
         myGameData.setPhotonTime(System.currentTimeMillis());
     }
 
-    public void updateGame(int direction, int HYPER_COUNT, int SCRAP_COUNT, double MAX_ROCK_SPEED, double MISSLE_PROBABILITY,double MaxRockSpeedTimesFPSPer2) {
+    public void updateGame(int direction) {
 
 
         if (!playing){
@@ -158,10 +249,10 @@ public class Game {
         }
 
         moveShip(direction);
-        updateShip(HYPER_COUNT, SCRAP_COUNT);
+        updateShip();
 
 
-        updateUfo(MAX_ROCK_SPEED,MISSLE_PROBABILITY,MaxRockSpeedTimesFPSPer2);
+        updateUfo();
 
         updateAsteroids();
         updateExplosions();
@@ -170,12 +261,12 @@ public class Game {
     }
 
 
-    public void endGame(int SCRAP_COUNT) {
+    public void endGame() {
 
         // Stop myShip, flying saucer, guided myMissile and associated sounds.
 
         playing = false;
-        stopShip(SCRAP_COUNT);
+        stopShip();
         stopUfo();
         stopMissile();
     }
@@ -193,7 +284,7 @@ public class Game {
         myGameData.setUfoCounter(myUfo.getCounter());
     }
 
-    public void initMissle(int MISSLE_COUNT) {
+    public void initMissle() {
 
         myUfo.initMissile();
 
@@ -207,12 +298,20 @@ public class Game {
         misslePlaying = true;
     }
 
+
     public void initExplosions() {
+
+        int i = 0;
+        for (Explosion explosion : myExplosions) {
+            explosion.init();
+            myGameData.setExplosionCounter(i++, 0);
+        }
+
+        myGameData.setExplosionIndex(0);
     }
 
 
-
-    public void initAsteroids(int STORM_PAUSE, double MAX_ROCK_SPEED) {
+    public void initAsteroids() {
 
         // Create random shapes, positions and movements for each asteroid.
 
@@ -265,7 +364,7 @@ public class Game {
 
     // update sprites ---------------
 
-    private void updateShip(int HYPER_COUNT, int SCRAP_COUNT) {
+    private void updateShip() {
         // Move the ship. If it is currently in hyperspace, advance the countdown.
 
         if (myShip.isActive()) {
@@ -299,7 +398,7 @@ public class Game {
                 }
                 else{
                     //ToDo: can game end itself??
-                    endGame(SCRAP_COUNT);
+                    endGame();
                 }
 
             }
@@ -310,7 +409,7 @@ public class Game {
     }
 
 
-    public void updateUfo(double MISSLE_PROBABILITY, double MaxRockSpeedTimesFPSPer2) {
+    public void updateUfo() {
 
         // Move the flying saucer and check for collision with a photon. Stop it
         // when its counter has expired.
@@ -358,9 +457,24 @@ public class Game {
     }
 
     public void updateExplosions() {
+
+        // Move any isActive explosion debris. Stop explosion when its counter has
+        // expired.
+
+        int i = 0;
+        for (Explosion explosion : myExplosions) {
+            i++;
+            if (explosion.isActive()) {
+                explosion.advance();
+                explosion.render();
+                int[] explosionCounter = myGameData.getExplosionCounter();
+                if (--explosionCounter[i] < 0)
+                    myExplosions[i].setActive(false);
+            }
+        }
     }
 
-    public void updateAsteroids(int SCRAP_COUNT) {
+    public void updateAsteroids() {
 
        // Move any isActive asteroids and check for collisions.
 
@@ -395,7 +509,7 @@ public class Game {
 
                 if (myShip.isActive() && myGameData.getHyperCounter() <= 0 &&
                         asteroid.isActive() && asteroid.isColliding(myShip)) {
-                    killShip(SCRAP_COUNT);
+                    killShip();
                 }
             }
         }
@@ -416,7 +530,7 @@ public class Game {
 
     }
 
-    public void updateMissle(int SCRAP_COUNT, int MAX_ROCK_SPEED) {
+    public void updateMissle() {
 
         // Move the guided missle and check for collision with ship or photon. Stop
         // it when its counter has expired.
@@ -427,7 +541,7 @@ public class Game {
                 myGameData.setMissleCounter(missleCounter);
                 myUfo.stopMissle();
             } else {
-                guideMissle(MAX_ROCK_SPEED);
+                guideMissle();
                 myUfo.getMyMissile().advance();
                 myUfo.getMyMissile().render();
                 for (Photon photon: myPhotons) {
@@ -444,7 +558,7 @@ public class Game {
 
                 if (myUfo.getMyMissile().isActive() && myShip.isActive() &&
                         myGameData.getHyperCounter() <= 0 && myShip.isColliding(myUfo.getMyMissile())) {
-                    killShip(SCRAP_COUNT);
+                    killShip();
                 }
             }
         }
@@ -452,7 +566,7 @@ public class Game {
 
     // stop sprites ----------------
 
-    public void stopShip(int SCRAP_COUNT) {
+    public void stopShip() {
         myShip.stop();
 
         myGameData.setShipCounter(SCRAP_COUNT);
@@ -483,13 +597,13 @@ public class Game {
 
     // other methods -------------------
 
-    private void killShip(int SCRAP_COUNT){
+    private void killShip(){
         if (sound) {
             crashSound.setFramePosition(0);
             crashSound.start();
         }
         explode(myShip);
-        stopShip(SCRAP_COUNT);
+        stopShip();
         stopUfo();
         myUfo.stopMissle();
     }
@@ -522,7 +636,7 @@ public class Game {
         myShip.move(direction);
     }
 
-    public void guideMissle(int MAX_ROCK_SPEED) {
+    public void guideMissle() {
 
         if (!myShip.isActive() || myGameData.getHyperCounter() > 0)
             return;
@@ -560,6 +674,50 @@ public class Game {
 
         myUfo.getMyMissile().setDeltaX( 0.75 * MAX_ROCK_SPEED * -Math.sin(myUfo.getMyMissile().getAngle()));
         myUfo.getMyMissile().setDeltaY(0.75 * MAX_ROCK_SPEED *  Math.cos(myUfo.getMyMissile().getAngle()));
+    }
+
+
+    public void explode(Sprite s) {
+
+        int c, i, j;
+        int cx, cy;
+
+        // Create sprites for explosion animation. The each individual line segment
+        // of the given sprite is used to create a new sprite that will move
+        // outward  from the sprite's original position with a random rotation.
+
+        s.render();
+        c = 2;
+        if (detail || s.getSprite().npoints < 6)
+            c = 1;
+        for (i = 0; i < s.getSprite().npoints; i += c) {
+
+            int explosionIndex = myGameData.getExplosionIndex();
+
+            myGameData.setExplosionIndex(++explosionIndex);
+
+            if (explosionIndex >= myGameProperties.getMAX_SCRAP())
+                explosionIndex = 0;
+            myExplosions[explosionIndex].setActive(true);
+            j = i + 1;
+            if (j >= s.getSprite().npoints)
+                j -= s.getSprite().npoints;
+            cx = (int) ((s.getShape().xpoints[i] + s.getShape().xpoints[j]) / 2);
+            cy = (int) ((s.getShape().ypoints[i] + s.getShape().ypoints[j]) / 2);
+            myExplosions[explosionIndex].getShape().addPoint(
+                    s.getShape().xpoints[i] - cx,
+                    s.getShape().ypoints[i] - cy);
+            myExplosions[explosionIndex].getShape().addPoint(
+                    s.getShape().xpoints[j] - cx,
+                    s.getShape().ypoints[j] - cy);
+            myExplosions[explosionIndex].setX(s.getX() + cx);
+            myExplosions[explosionIndex].setY(s.getY() + cy);
+            myExplosions[explosionIndex].setAngle(s.getAngle());
+            myExplosions[explosionIndex].setDeltaAngle(4 * (Math.random() * 2 * MAX_ROCK_SPIN - MAX_ROCK_SPIN));
+            myExplosions[explosionIndex].setDeltaX((Math.random() * 2 * MAX_ROCK_SPEED - MAX_ROCK_SPEED + s.getDeltaX()) / 2);
+            myExplosions[explosionIndex].setDeltaY((Math.random() * 2 * MAX_ROCK_SPEED - MAX_ROCK_SPEED + s.getDeltaY()) / 2);
+            myGameData.setExplosionCounter(explosionIndex,SCRAP_COUNT);
+        }
     }
 
 }

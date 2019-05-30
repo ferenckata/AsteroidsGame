@@ -59,7 +59,7 @@ public class GameHandler {
         myShip = myShapeFactory.createShip();
         myMissile = myShapeFactory.createMissile();
         myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
-        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(),myStartScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
 
     }
@@ -74,12 +74,21 @@ public class GameHandler {
         myGameSound = myGameFactory.createGameSound();
 
         myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions,myStartScreen.getMinRockSpeed());
+        myGame.setHYPER_COUNT(myStartScreen.getHyperCount());
+        myGame.setMAX_ROCK_SPEED(myStartScreen.getMaxRockSpeed());
+        myGame.setMAX_ROCK_SPIN(myStartScreen.getMaxRockSpin());
+        myGame.setMaxRockSpeedTimesFPSPer2(myStartScreen.getMaxRockSpeedTimesFPSPer2());
+        myGame.setMISSLE_COUNT(myStartScreen.getMissleCount());
+        myGame.setSCRAP_COUNT(myStartScreen.getScrapCount());
+        myGame.setMISSLE_PROBABILITY(myStartScreen.getMissleProbability());
+        myGame.setSTORM_PAUSE(myStartScreen.getStormPause());
+
 
         if (isSoundLoaded){
             myGameSound.stopThrustersSound();
             myGameSound.setThrustersPlaying(false);
         }
-        myGame.endGame(myStartScreen.getScrapCount());
+        myGame.endGame();
 
     }
 
@@ -161,7 +170,7 @@ public class GameHandler {
 
             int direction = getDirection();
 
-            myGame.updateGame(direction, myStartScreen.getHyperCount(),myStartScreen.getScrapCount(),myStartScreen.getMaxRockSpeed(),myStartScreen.getMissleProbability(),myStartScreen.getMaxRockSpeedTimesFPSPer2());
+            myGame.updateGame(direction);
 
 
             // Check the score and advance high score, add a new ship or start the

@@ -8,7 +8,7 @@ public class Explosion extends Sprite {
 
     @Override
     public void init() {
-
+        this.isActive = false;
     }
 
     @Override
