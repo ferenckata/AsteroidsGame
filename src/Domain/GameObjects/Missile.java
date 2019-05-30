@@ -9,7 +9,12 @@ public class Missile extends Sprite {
 
     @Override
     public void init() {
-
+        isActive = true;
+        angle = 0.0;
+        deltaAngle = 0.0;
+        deltaX = 0.0;
+        deltaY = 0.0;
+        render();
     }
 
     @Override
@@ -19,6 +24,6 @@ public class Missile extends Sprite {
 
     @Override
     public void stop() {
-
+        isActive = false;
     }
 }
