@@ -54,9 +54,13 @@ public class GameHandler {
 
     public void createGameObjects(){
 
-        myUFO = myShapeFactory.createUFO();
-        myShip = myShapeFactory.createShip(myGameProperties.getMaxShots(),myGameProperties.getMAX_ROCK_SPEED());
-        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks());
+
+        myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(),myStartScreen.getMissleProbability());
+        myShip = myShapeFactory.createShip();
+        myMissile = myShapeFactory.createMissile();
+        myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(),myStartScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
+
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
 
     }
@@ -70,7 +74,18 @@ public class GameHandler {
         myGame = myGameFactory.createGame(highScore,sound,detail);
         myGameSound = myGameFactory.createGameSound();
 
+
         myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
+        myGame.setHYPER_COUNT(myStartScreen.getHyperCount());
+        myGame.setMAX_ROCK_SPEED(myStartScreen.getMaxRockSpeed());
+        myGame.setMAX_ROCK_SPIN(myStartScreen.getMaxRockSpin());
+        myGame.setMaxRockSpeedTimesFPSPer2(myStartScreen.getMaxRockSpeedTimesFPSPer2());
+        myGame.setMISSLE_COUNT(myStartScreen.getMissleCount());
+        myGame.setSCRAP_COUNT(myStartScreen.getScrapCount());
+        myGame.setMISSLE_PROBABILITY(myStartScreen.getMissleProbability());
+        myGame.setSTORM_PAUSE(myStartScreen.getStormPause());
+
+
 
         if (isSoundLoaded){
             myGameSound.stopThrustersSound();
@@ -133,8 +148,27 @@ public class GameHandler {
 
     }
 
+
+    private int getDirection(){
+        int direction = 0;
+
+        if(myIO.isUp()){
+            direction = 1;
+        }else if(myIO.isDown()){
+            direction = 2;
+        }else if(myIO.isRight()){
+            direction = 3;
+        }else if(myIO.isLeft()){
+            direction = 4;
+        }
+
+        return direction;
+    }
+
     public void updateGame() {
         if (!myGame.isPaused()) {
+
+
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
@@ -158,23 +192,23 @@ public class GameHandler {
         if (keyEvent.isActionKey()){
             switch (keyEvent.getKeyCode()){
                 case KeyEvent.VK_UP :
-                    myGame.updateGame(1,myStartScreen.getHyperCount());
+                    myGame.updateGame(1);
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
                         if (myGame.isSound() && !myGame.isPaused()){
                             myGameSound.loopThrustersSound();
                         }
                     }
                 case KeyEvent.VK_DOWN :
-                    myGame.updateGame(2,myStartScreen.getHyperCount());
+                    myGame.updateGame(2);
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
                         if (myGame.isSound() && !myGame.isPaused()){
                             myGameSound.loopThrustersSound();
                         }
                     }
                 case KeyEvent.VK_RIGHT :
-                    myGame.updateGame(4,myStartScreen.getHyperCount());
+                    myGame.updateGame(4);
                 case KeyEvent.VK_LEFT :
-                    myGame.updateGame(3,myStartScreen.getHyperCount());
+                    myGame.updateGame(3);
 
             }
         } else {
@@ -283,7 +317,7 @@ public class GameHandler {
     }
 
     public Missile getMissile() {
-        return myGame.getMyUfo().getMissile();
+        return myGame.getMyUfo().getMyMissile();
     }
 
     public int getMaxRocks() {

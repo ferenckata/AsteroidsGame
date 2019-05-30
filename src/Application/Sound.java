@@ -95,6 +95,24 @@ public class Sound {
 
     }
 
+
+    public void initUfoSound(boolean sound) {
+
+        mySoundData.setSaucerPlaying(true);
+
+        if (sound) {
+            saucerSound.setFramePosition(0);
+            saucerSound.start();
+            saucerSound.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+    }
+
+    public void initCrashSound() {
+        crashSound.setFramePosition(0);
+        crashSound.start();
+
+    }
+
     public void stopThrustersSound() {
 
         if (isThrustersPlaying()){
