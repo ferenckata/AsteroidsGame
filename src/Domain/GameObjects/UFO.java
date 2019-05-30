@@ -54,4 +54,14 @@ public class UFO extends Sprite {
     public Missile getMyMissile() {
         return myMissile;
     }
+
+    public void initMissile(){
+        myMissile.setX(x);
+        myMissile.setY(y);
+        myMissile.init();
+    }
+
+    public void stopMissle() {
+        myMissile.stop();
+    }
 }

@@ -164,4 +164,12 @@ public class GameData {
     public int getAsteroidsCounter() {
         return asteroidsCounter;
     }
+
+    public void setAsteroidsCounter(int asteroidsCounter) {
+        this.asteroidsCounter = asteroidsCounter;
+    }
+
+    public void setAsteroidsLeft(int asteroidsLeft) {
+        this.asteroidsLeft = asteroidsLeft;
+    }
 }

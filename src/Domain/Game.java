@@ -4,6 +4,8 @@ import src.Application.Sound;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
 
+import javax.sound.sampled.Clip;
+
 public class Game {
 
     // Flags for game state and options.
@@ -20,7 +22,6 @@ public class Game {
 
     private Ship myShip;
     private UFO myUfo;
-    private Missile myMissile;
     private Photon[] myPhotons;
     private Asteroid[] myAsteroids;
     private Explosion[] myExplosions;
@@ -88,14 +89,6 @@ public class Game {
 
     public void setMyUfo(UFO myUfo) {
         this.myUfo = myUfo;
-    }
-
-    public Missile getMyMissile() {
-        return myMissile;
-    }
-
-    public void setMyMissile(Missile myMissile) {
-        this.myMissile = myMissile;
     }
 
     public Photon[] getMyPhotons() {
@@ -200,11 +193,68 @@ public class Game {
         myGameData.setUfoCounter(myUfo.getCounter());
     }
 
+    public void initMissle(int MISSLE_COUNT) {
+
+        myUfo.initMissile();
+
+        myGameData.setMissleCounter(MISSLE_COUNT);
+
+        if (sound) {
+            missleSound.start();
+            missleSound.loop(Clip.LOOP_CONTINUOUSLY);
+        }
+
+        misslePlaying = true;
+    }
+
     public void initExplosions() {
     }
 
-    public void initAsteroids() {
+
+
+    public void initAsteroids(int STORM_PAUSE, double MAX_ROCK_SPEED) {
+
+        // Create random shapes, positions and movements for each asteroid.
+
+        for (Asteroid asteroid: myAsteroids ) {
+
+            // Create a jagged shape for the asteroid and give it a random rotation.
+
+            // set up normal sized asteroid
+            asteroid.setUpAsteroid(false, 0, 0);
+        }
+
+        myGameData.setAsteroidsCounter(STORM_PAUSE);
+        myGameData.setAsteroidsLeft(myGameProperties.getMAX_ROCKS());
+        double asteroidsSpeed = myGameData.getAsteroidsSpeed();
+        if (asteroidsSpeed < MAX_ROCK_SPEED)
+            myGameData.setAsteroidsSpeed(asteroidsSpeed + 0.5);
     }
+
+
+    public void initSmallAsteroids(int n) {
+        // Create one or two smaller asteroids from a larger one using inactive
+        // asteroids. The new asteroids will be placed in the same position as the
+        // old one but will have a new, smaller shape and new, randomly generated
+        // movements.
+
+        int count = 0;
+        int i = 0;
+        double tempX = myAsteroids[n].getX();
+        double tempY = myAsteroids[n].getY();
+        do {
+            if (!myAsteroids[i].isActive()) {
+
+                // set up small asteroids
+                myAsteroids[i].setUpAsteroid(true, tempX, tempY);
+
+                count++;
+                myGameData.setAsteroidsLeft(myGameData.getAsteroidsLeft() + 1);
+            }
+            i++;
+        } while (i < myGameProperties.getMAX_ROCKS() && count < 2);
+    }
+
 
     public void initPhotons() {
         for (Photon photon: myPhotons) {
@@ -214,59 +264,6 @@ public class Game {
     }
 
     // update sprites ---------------
-
-    // stop sprites ----------------
-
-    public void stopShip(int SCRAP_COUNT) {
-        myShip.stop();
-
-        myGameData.setShipCounter(SCRAP_COUNT);
-        int shipsLeft = myGameData.getShipsLeft();
-        if (shipsLeft > 0)
-            myGameData.setShipsLeft(--shipsLeft);
-    }
-
-    public void stopUfo() {
-        myUfo.stop();
-        myGameData.setUfoCounter(0);
-        myGameData.setUfoPassesLeft(0);
-            if (loaded)
-                saucerSound.stop();
-            saucerPlaying = false;
-    }
-
-
-    public void stopMissile() {
-        myUfo.getMyMissile().stop();
-    }
-
-
-    // other methods -------------------
-
-    public void evaluateHighScore() {
-        if (myGameData.getScore() > myGameData.getHighScore())
-            myGameData.setHighScore(myGameData.getScore());
-    }
-
-
-    public void rewardShip() {
-        if (myGameData.getScore() > myGameData.getNewShipScore()) {
-            myGameData.setNewShipScore( myGameData.getNewShipScore() + myGameProperties.getNewShipPoints());
-            myGameData.setShipsLeft(myGameData.getShipsLeft() + 1);
-        }
-
-    }
-
-    public void getUFO() {
-
-        if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !myUfo.isActive()) {
-            myGameData.setNewUfoScore( myGameData.getNewUfoScore() + myGameProperties.getNewUfoPoints());
-            myGameData.setUfoPassesLeft(myGameProperties.getUfoPasses());
-            initUfo();
-        }
-    }
-
-
 
     private void updateShip(int HYPER_COUNT, int SCRAP_COUNT) {
         // Move the ship. If it is currently in hyperspace, advance the countdown.
@@ -312,11 +309,8 @@ public class Game {
 
     }
 
-    private void moveShip(int direction) {
-        myShip.move(direction);
-    }
 
-    public void updateUfo(double MAX_ROCK_SPEED, double MISSLE_PROBABILITY, double MaxRockSpeedTimesFPSPer2) {
+    public void updateUfo(double MISSLE_PROBABILITY, double MaxRockSpeedTimesFPSPer2) {
 
         // Move the flying saucer and check for collision with a photon. Stop it
         // when its counter has expired.
@@ -366,7 +360,45 @@ public class Game {
     public void updateExplosions() {
     }
 
-    public void updateAsteroids() {
+    public void updateAsteroids(int SCRAP_COUNT) {
+
+       // Move any isActive asteroids and check for collisions.
+
+        for (Asteroid asteroid : myAsteroids) {
+            if (asteroid.isActive()) {
+                asteroid.advance();
+                asteroid.render();
+
+                // If hit by photon, kill asteroid and advance score. If asteroid is
+                // large, make some smaller ones to replace it.
+
+                for (int j = 0; j < myGameProperties.getMAX_SHOTS(); j++)
+                    if (photons[j].active && asteroid.isActive() && asteroid.isColliding(photons[j])) {
+                        int asteroidsLeft = myGameData.getAsteroidsLeft();
+                        myGameData.setAsteroidsLeft(--asteroidsLeft);
+                        asteroid.setActive(false);
+                        photons[j].active = false;
+                        if (sound) {
+                            explosionSound.setFramePosition(0);
+                            explosionSound.start();
+                        }
+
+                        explode(asteroid);
+                        if (!asteroid.getIsSmall()) {
+                            myGameData.setScore(myGameData.getScore() + myGameProperties.getBigPoints());
+                            initSmallAsteroids((int) Math.random()*2);
+                        } else
+                            myGameData.setScore(myGameData.getScore() + myGameProperties.getSmallPoints());
+                    }
+
+                // If the ship is not in hyperspace, see if it is hit.
+
+                if (myShip.isActive() && myGameData.getHyperCounter() <= 0 &&
+                        asteroid.isActive() && asteroid.isColliding(myShip)) {
+                    killShip(SCRAP_COUNT);
+                }
+            }
+        }
     }
 
     public void updatePhotons(){
@@ -384,5 +416,150 @@ public class Game {
 
     }
 
+    public void updateMissle(int SCRAP_COUNT, int MAX_ROCK_SPEED) {
+
+        // Move the guided missle and check for collision with ship or photon. Stop
+        // it when its counter has expired.
+
+        if (myUfo.getMyMissile().isActive()) {
+            int missleCounter = myGameData.getMissleCounter();
+            if (--missleCounter <= 0){
+                myGameData.setMissleCounter(missleCounter);
+                myUfo.stopMissle();
+            } else {
+                guideMissle(MAX_ROCK_SPEED);
+                myUfo.getMyMissile().advance();
+                myUfo.getMyMissile().render();
+                for (Photon photon: myPhotons) {
+                    if (photon.isActive() && myUfo.getMyMissile().isColliding(photon)) {
+                        if (sound) {
+                            crashSound.setFramePosition(0);
+                            crashSound.start();
+                        }
+                        explode(myUfo.getMyMissile());
+                        myUfo.getMyMissile().stop();
+                        myGameData.setScore(myGameData.getScore() + myGameProperties.getMisslePoints());
+                    }
+                }
+
+                if (myUfo.getMyMissile().isActive() && myShip.isActive() &&
+                        myGameData.getHyperCounter() <= 0 && myShip.isColliding(myUfo.getMyMissile())) {
+                    killShip(SCRAP_COUNT);
+                }
+            }
+        }
+    }
+
+    // stop sprites ----------------
+
+    public void stopShip(int SCRAP_COUNT) {
+        myShip.stop();
+
+        myGameData.setShipCounter(SCRAP_COUNT);
+        int shipsLeft = myGameData.getShipsLeft();
+        if (shipsLeft > 0)
+            myGameData.setShipsLeft(--shipsLeft);
+    }
+
+    public void stopUfo() {
+        myUfo.stop();
+        myGameData.setUfoCounter(0);
+        myGameData.setUfoPassesLeft(0);
+            if (loaded){
+                saucerSound.stop();
+            }
+            saucerPlaying = false;
+    }
+
+
+    public void stopMissile() {
+        myUfo.getMyMissile().stop();
+        myGameData.setMissleCounter(0);
+        if (loaded)
+            missleSound.stop();
+        misslePlaying = false;
+    }
+
+
+    // other methods -------------------
+
+    private void killShip(int SCRAP_COUNT){
+        if (sound) {
+            crashSound.setFramePosition(0);
+            crashSound.start();
+        }
+        explode(myShip);
+        stopShip(SCRAP_COUNT);
+        stopUfo();
+        myUfo.stopMissle();
+    }
+
+    public void evaluateHighScore() {
+        if (myGameData.getScore() > myGameData.getHighScore())
+            myGameData.setHighScore(myGameData.getScore());
+    }
+
+
+    public void rewardShip() {
+        if (myGameData.getScore() > myGameData.getNewShipScore()) {
+            myGameData.setNewShipScore( myGameData.getNewShipScore() + myGameProperties.getNewShipPoints());
+            myGameData.setShipsLeft(myGameData.getShipsLeft() + 1);
+        }
+
+    }
+
+    public void getUFO() {
+
+        if (playing && myGameData.getScore() > myGameData.getNewUfoScore() && !myUfo.isActive()) {
+            myGameData.setNewUfoScore( myGameData.getNewUfoScore() + myGameProperties.getNewUfoPoints());
+            myGameData.setUfoPassesLeft(myGameProperties.getUfoPasses());
+            initUfo();
+        }
+    }
+
+
+    private void moveShip(int direction) {
+        myShip.move(direction);
+    }
+
+    public void guideMissle(int MAX_ROCK_SPEED) {
+
+        if (!myShip.isActive() || myGameData.getHyperCounter() > 0)
+            return;
+
+        // Find the angle needed to hit the ship.
+
+        double dx = myShip.getX() - myUfo.getMyMissile().getX();
+        double dy = myShip.getY() - myUfo.getMyMissile().getY();
+
+        double angle = 0.0;
+
+        if (dx == 0 && dy == 0){
+            angle = 0;
+        }
+
+        if (dx == 0) {
+            if (dy < 0)
+                angle = -Math.PI / 2;
+            else
+                angle = Math.PI / 2;
+        }
+        else {
+            angle = Math.atan(Math.abs(dy / dx));
+            if (dy > 0)
+                angle = -angle;
+            if (dx < 0)
+                angle = Math.PI - angle;
+        }
+
+        // Adjust angle for screen coordinates.
+
+        myUfo.getMyMissile().setAngle(angle - Math.PI / 2);
+
+        // Change the missle's angle so that it points toward the ship.
+
+        myUfo.getMyMissile().setDeltaX( 0.75 * MAX_ROCK_SPEED * -Math.sin(myUfo.getMyMissile().getAngle()));
+        myUfo.getMyMissile().setDeltaY(0.75 * MAX_ROCK_SPEED *  Math.cos(myUfo.getMyMissile().getAngle()));
+    }
 
 }
