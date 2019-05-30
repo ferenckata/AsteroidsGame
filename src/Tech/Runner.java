@@ -146,7 +146,7 @@ public class Runner implements Runnable{
     }
 
     private void setUpMainFrame(){
-        JFrame mainFrame = new JFrame("src.Asteroids Game");
+        JFrame mainFrame = new JFrame("src.Main Game");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //mainFrame.add(myStartScreen);
         mainFrame.add(myGameScreen);

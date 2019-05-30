@@ -8,7 +8,7 @@ public class Main{
 
     // Copyright information.
 
-    private static String copyName = "src.Asteroids";
+    private static String copyName = "src.Main";
     private static String copyVers = "Version 1.3";
     private static String copyInfo = "Copyright 1998-2001 by Mike Hall";
     private static String copyLink = "http://www.brainjar.com";
