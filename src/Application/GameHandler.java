@@ -54,11 +54,13 @@ public class GameHandler {
 
     public void createGameObjects(){
 
+
         myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(),myStartScreen.getMissleProbability());
         myShip = myShapeFactory.createShip();
         myMissile = myShapeFactory.createMissile();
         myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
         myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(),myStartScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
+
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
 
     }
@@ -72,6 +74,7 @@ public class GameHandler {
         myGame = myGameFactory.createGame(highScore,sound,detail);
         myGameSound = myGameFactory.createGameSound();
 
+
         myGame.initGame(myShip,myUFO,myMissile,myPhotons,myAsteroids,myExplosions,myStartScreen.getMinRockSpeed());
         myGame.setHYPER_COUNT(myStartScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myStartScreen.getMaxRockSpeed());
@@ -81,6 +84,7 @@ public class GameHandler {
         myGame.setSCRAP_COUNT(myStartScreen.getScrapCount());
         myGame.setMISSLE_PROBABILITY(myStartScreen.getMissleProbability());
         myGame.setSTORM_PAUSE(myStartScreen.getStormPause());
+
 
 
         if (isSoundLoaded){
@@ -144,6 +148,7 @@ public class GameHandler {
 
     }
 
+
     private int getDirection(){
         int direction = 0;
 
@@ -162,6 +167,7 @@ public class GameHandler {
 
     public void updateGame() {
         if (!myGame.isPaused()) {
+
 
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.

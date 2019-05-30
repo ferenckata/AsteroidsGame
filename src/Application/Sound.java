@@ -95,6 +95,7 @@ public class Sound {
 
     }
 
+
     public void initUfoSound(boolean sound) {
 
         mySoundData.setSaucerPlaying(true);
@@ -109,6 +110,7 @@ public class Sound {
     public void initCrashSound() {
         crashSound.setFramePosition(0);
         crashSound.start();
+
 
     public void stopThrustersSound() {
 

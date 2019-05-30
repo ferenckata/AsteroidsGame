@@ -19,6 +19,7 @@ public abstract class Screen extends JPanel {
     private static final int MISSLE_COUNT = 4 * FPS;  // seconds x frames per second.
     private static final int STORM_PAUSE  = 2 * FPS;
 
+
     private static final double MIN_ROCK_SPEED =  40.0 / FPS;
     private static final double MAX_ROCK_SPEED = 240.0 / FPS;
     private static final double MAX_ROCK_SPIN  = Math.PI / FPS;

@@ -50,6 +50,7 @@ public class Game {
         myPhotons = new Photon[myGameProperties.getMaxShots()];
         myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
         myExplosions = new Explosion[myGameProperties.getMaxScrap()];
+
     }
 
     public double getMISSLE_PROBABILITY() {
@@ -86,6 +87,7 @@ public class Game {
 
     public int getHYPER_COUNT() {
         return HYPER_COUNT;
+
     }
 
     public void setHYPER_COUNT(int HYPER_COUNT) {
@@ -213,13 +215,17 @@ public class Game {
         this.myGameData = myGameData;
     }
 
+
     public void initGame(Ship ship, UFO ufo, Missile missile,Photon[] photons,Asteroid[] asteroids, Explosion[] explosions, double MIN_ROCK_SPEED) {
+
 
         // Initialize game data and sprites.
 
         myGameData.setScore(0);
+
         myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
         myGameData.setShipsLeft(MAX_SHIPS);
+
         myGameData.setNewShipScore(NEW_SHIP_POINTS);
         myGameData.setNewUfoScore(NEW_UFO_POINTS);
 
@@ -275,7 +281,9 @@ public class Game {
 
         myUfo.init();
 
+
         gameSound.initUfoSound(sound);
+
 
         myGameData.setUfoCounter(myUfo.getCounter());
     }
@@ -564,6 +572,7 @@ public class Game {
 
     public void stopShip() {
         myShip.stop();
+
 
         myGameData.setShipCounter(SCRAP_COUNT);
         int shipsLeft = myGameData.getShipsLeft();
