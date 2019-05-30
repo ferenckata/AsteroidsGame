@@ -54,63 +54,6 @@ import java.io.File;
 public class Asteroids extends JPanel implements Runnable, KeyListener {
 
 
-
-  public void initUfo() {
-
-
-  }
-
-  public void updateUfo() {
-
-    int i, d;
-
-    // Move the flying saucer and check for collision with a photon. Stop it
-    // when its counter has expired.
-
-    if (ufo.active) {
-      if (--ufoCounter <= 0) {
-        if (--ufoPassesLeft > 0)
-          initUfo();
-        else
-          stopUfo();
-      }
-      if (ufo.active) {
-        ufo.advance();
-        ufo.render();
-        for (i = 0; i < MAX_SHOTS; i++)
-          if (photons[i].active && ufo.isColliding(photons[i])) {
-            if (sound) {
-              crashSound.setFramePosition(0);
-              crashSound.start();  
-            }
-            explode(ufo);
-            stopUfo();
-            score += UFO_POINTS;
-          }
-
-          // On occassion, fire a missle at the ship if the saucer is not too
-          // close to it.
-
-          d = (int) Math.max(Math.abs(ufo.x - ship.x), Math.abs(ufo.y - ship.y));
-          if (ship.active && hyperCounter <= 0 &&
-              ufo.active && !missle.active &&
-              d > MAX_ROCK_SPEED * FPS / 2 &&
-              Math.random() < MISSLE_PROBABILITY)
-            initMissle();
-       }
-    }
-  }
-
-  public void stopUfo() {
-
-    ufo.active = false;
-    ufoCounter = 0;
-    ufoPassesLeft = 0;
-		if (loaded) 
-			saucerSound.stop();
-    saucerPlaying = false;
-  }
-
   public void initMissle() {
 
     missle.active = true;

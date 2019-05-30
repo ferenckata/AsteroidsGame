@@ -2,11 +2,20 @@ package src.Domain.GameObjects;
 
 public class UFO extends Sprite {
 
-    double MAX_ROCK_SPEED;
+    private static double MAX_ROCK_SPEED;
+    private static double UFO_POINTS;
+    private static double MAX_SHOTS;
+    private static double MISSLE_PROBABILITY;
 
-    public UFO(int width, int height, double MAX_ROCK_SPEED){
+     private Missile myMissile;
+
+    public UFO(int width, int height, double MAX_ROCK_SPEED, double UFO_POINTS, double MAX_SHOTS, double MISSLE_PROBABILITY, Missile missile){
         super(width,height);
         this.MAX_ROCK_SPEED = MAX_ROCK_SPEED;
+        this.UFO_POINTS = UFO_POINTS;
+        this.MAX_SHOTS = MAX_SHOTS;
+        this.MISSLE_PROBABILITY = MISSLE_PROBABILITY;
+        this.myMissile = missile;
     }
 
     @Override
@@ -30,12 +39,19 @@ public class UFO extends Sprite {
 
     @Override
     public void update() {
-
+        myMissile.update();
     }
 
     @Override
     public void stop() {
-
+        isActive = false;
     }
 
+    public int getCounter() {
+        return (int) Math.abs(width / deltaX);
+    }
+
+    public Missile getMyMissile() {
+        return myMissile;
+    }
 }

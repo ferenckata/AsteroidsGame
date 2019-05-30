@@ -118,4 +118,9 @@ public class Sound {
             saucerSound.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
+
+    public void initCrashSound() {
+        crashSound.setFramePosition(0);
+        crashSound.start();
+    }
 }

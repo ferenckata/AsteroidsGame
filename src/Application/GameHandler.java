@@ -55,7 +55,7 @@ public class GameHandler {
 
     public void createGameObjects(){
 
-        myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed());
+        myUFO = myShapeFactory.createUFO(myStartScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(),myStartScreen.getMissleProbability());
         myShip = myShapeFactory.createShip();
         myMissile = myShapeFactory.createMissile();
         myPhotons = myShapeFactory.createPhotons(myGameProperties.getMaxShots());
@@ -161,7 +161,7 @@ public class GameHandler {
 
             int direction = getDirection();
 
-            myGame.updateGame(direction, myStartScreen.getHyperCount(),myStartScreen.getScrapCount());
+            myGame.updateGame(direction, myStartScreen.getHyperCount(),myStartScreen.getScrapCount(),myStartScreen.getMaxRockSpeed(),myStartScreen.getMissleProbability(),myStartScreen.getMaxRockSpeedTimesFPSPer2());
 
 
             // Check the score and advance high score, add a new ship or start the

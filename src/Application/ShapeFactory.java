@@ -22,8 +22,9 @@ public class ShapeFactory {
     }
 
 
-    public UFO createUFO(double MAX_ROCK_SPEED){
-        UFO ufo = new UFO(myBackground.getWidth(), myBackground.getHeight(), MAX_ROCK_SPEED);
+    public UFO createUFO(double MAX_ROCK_SPEED, double UFO_POINTS, double MAX_SHOTS, double MISSLE_PROBABILITY){
+        Missile missile = new Missile(myBackground.getWidth(), myBackground.getHeight());
+        UFO ufo = new UFO(myBackground.getWidth(), myBackground.getHeight(), MAX_ROCK_SPEED, UFO_POINTS, MAX_SHOTS, MISSLE_PROBABILITY, missile);
         ufo.getShape().addPoint(-15, 0);
         ufo.getShape().addPoint(-10, -5);
         ufo.getShape().addPoint(-5, -5);

@@ -121,4 +121,6 @@ public abstract class Screen extends JPanel {
     public static double getMissleProbability() {
         return MISSLE_PROBABILITY;
     }
+
+    public static double getMaxRockSpeedTimesFPSPer2(){ return MAX_ROCK_SPEED * FPS / 2;}
 }
