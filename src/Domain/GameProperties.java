@@ -25,12 +25,14 @@ public class GameProperties {
     private static final int UFO_PASSES = 3;          // Number of passes for flying
     // saucer per appearance.
 
+
     private static final int    MIN_ROCK_SIDES =   6; // Ranges for asteroid shape, size
     private static final int    MAX_ROCK_SIDES =  16; // speed and rotation.
     private static final int    MIN_ROCK_SIZE  =  20;
     private static final int    MAX_ROCK_SIZE  =  40;
 
     private static final int FIRE_DELAY = 50;         // Minimum number of milliseconds
+
     // required between photon shots.
 
     private static final int BIG_POINTS    =  25;     // Points scored for shooting

@@ -37,7 +37,6 @@ public class GameData {
 
     private int   explosionIndex;                         // Next available explosion sprite.
 
-    private SoundData soundData;
     private static GameData myInstance;
     private GameProperties myGameProperties;
 

@@ -1,5 +1,8 @@
 package src.Domain.GameObjects;
 
+import src.Domain.Data.GameData;
+import src.Domain.GameProperties;
+
 public class Ship extends Sprite{
 
     private static int MAX_SHIP_SPEED = 0;
@@ -8,6 +11,7 @@ public class Ship extends Sprite{
 
     private Thruster fwdThruster;
     private Thruster revThruster;
+    private Photon[] myPhotons;
 
     public Ship(int width, int height){
         super(width,height);
@@ -36,6 +40,16 @@ public class Ship extends Sprite{
         revThruster.y = this.y;
         revThruster.angle = this.angle;
         revThruster.render();
+
+        initPhotons();
+    }
+
+    private void initPhotons() {
+        for (Photon photon: myPhotons) {
+            photon.init();
+            GameData.getMyInstance().setPhotonIndex(0); // this should be changed somehow
+        }
+
     }
 
     // setters and getters
@@ -58,6 +72,10 @@ public class Ship extends Sprite{
 
     public static void setShipAngleStep(int ShipAngleStep){
         SHIP_ANGLE_STEP = ShipAngleStep;
+    }
+
+    public void setMyPhotons(Photon[] myPhotons) {
+        this.myPhotons = myPhotons;
     }
 
     @Override
@@ -142,5 +160,10 @@ public class Ship extends Sprite{
         revThruster.y = y;
         revThruster.angle = angle;
         revThruster.render();
+    }
+
+    public void firePhotons(int photonIndex){
+        myPhotons[photonIndex].fire(x,y,angle);
+
     }
 }

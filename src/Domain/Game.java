@@ -50,7 +50,6 @@ public class Game {
         myPhotons = new Photon[myGameProperties.getMaxShots()];
         myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
         myExplosions = new Explosion[myGameProperties.getMaxScrap()];
-
     }
 
     public double getMISSLE_PROBABILITY() {
@@ -219,18 +218,15 @@ public class Game {
         // Initialize game data and sprites.
 
         myGameData.setScore(0);
-        myGameData.setShipsLeft(myGameProperties.getMaxShips());
         myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
-        myGameData.setNewShipScore(myGameProperties.getNewShipPoints());
-        myGameData.setNewUfoScore(myGameProperties.getNewUfoPoints());
+        myGameData.setShipsLeft(MAX_SHIPS);
+        myGameData.setNewShipScore(NEW_SHIP_POINTS);
+        myGameData.setNewUfoScore(NEW_UFO_POINTS);
 
         this.myShip = ship;
         myShip.init();
 
         myGameData.setHyperCounter(0);
-
-        this.myPhotons = photons;
-        initPhotons();
 
         stopUfo();
         stopMissile();
@@ -720,4 +716,12 @@ public class Game {
         }
     }
 
+    public void shipFire(int photonIndex) {
+        myShip.firePhotons(photonIndex);
+    }
+
+    public void hyperSpaceShip(int screenWidth, int screenHeight) {
+        myShip.setX(Math.random() * screenWidth);
+        myShip.setY(Math.random() * screenHeight);
+    }
 }
