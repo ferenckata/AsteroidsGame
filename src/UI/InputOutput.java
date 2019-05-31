@@ -31,7 +31,8 @@ public class InputOutput implements KeyListener {
 
     public void setUpIO(){
         // Set up key event handling and set focus to applet window.
-        addKeyListener(this);
+        GameScreen myGameScreen = GameScreen.getInstance();
+        myGameScreen.addKeyListener(this);
     }
 
     @Override

@@ -2,6 +2,7 @@ package src.Tech;
 
 import src.Application.GameHandler;
 
+import src.Domain.Game;
 import src.UI.GameScreen;
 import src.UI.InputOutput;
 
@@ -48,6 +49,7 @@ public class Runner implements Runnable{
 
         // Initialize game data and put us in 'game over' mode.
         myGameHandler.createNewGame();
+
 
         setUpMainFrame();
         start();

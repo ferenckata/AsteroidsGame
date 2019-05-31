@@ -15,7 +15,7 @@ public class GameHandler implements OnGameListener {
     private GameProperties myGameProperties = GameProperties.getInstance();
     private GameData myGameData = GameData.getInstance();
     private Game myGame;
-    private Sound myGameSound;
+    private Sound myGameSound = Sound.getInstance();
     private GameScreen myGameScreen = GameScreen.getInstance();
     private InputOutput myIO = InputOutput.getInstance();
     private static GameHandler myInstance = null;
@@ -63,7 +63,6 @@ public class GameHandler implements OnGameListener {
         myGameSound = myGameFactory.createGameSound();
 
 
-        myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
         myGame.setHYPER_COUNT(myGameScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myGameScreen.getMaxRockSpeed());
         myGame.setMIN_ROCK_SPEED(myGameScreen.getMinRockSpeed()); // ToDo: for some reason here the minRockSpeed turns into 0
@@ -80,8 +79,19 @@ public class GameHandler implements OnGameListener {
             myGameSound.setThrustersPlaying(false);
         }
 
-        myGame.endGame();
+        initGame(myShip,myUFO,myAsteroids,myExplosions);
+        endGame();
 
+
+    }
+
+    public void initGame(Ship myShip, UFO myUFO, Asteroid[] myAsteroids, Explosion[] myExplosions){
+        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
+
+    }
+
+    public void endGame(){
+        myGame.endGame();
     }
 
 

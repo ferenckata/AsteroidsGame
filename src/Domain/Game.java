@@ -4,10 +4,12 @@ import src.Application.OnGameListener;
 import src.Application.Sound;
 import src.Domain.Data.GameData;
 import src.Domain.GameObjects.*;
+import src.UI.GameScreen;
 
 import javax.sound.sampled.Clip;
 
 public class Game {
+
 
     // Flags for game state and options.
 
@@ -23,7 +25,7 @@ public class Game {
     private double MAX_ROCK_SPEED;
 
     private double MIN_ROCK_SPIN;
-    private double MIN_ROCK_SPEED;
+    private double MIN_ROCK_SPEED = GameScreen.getInstance().getMinRockSpeed();
 
     private int SCRAP_COUNT;
     private int MISSILE_COUNT;
@@ -232,30 +234,26 @@ public class Game {
         // Initialize game data and sprites.
 
         myGameData.setScore(0);
-
-        myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED); // ToDo: speed should be different
         myGameData.setShipsLeft(myGameProperties.getMAX_SHIPS());
-
+        myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED); // ToDo: speed should be different
         myGameData.setNewShipScore(myGameProperties.getNewShipPoints());
         myGameData.setNewUfoScore(myGameProperties.getNewUfoPoints());
 
         this.myUfo = ufo;
         this.myAsteroids = asteroids;
         this.myExplosions = explosions;
-
         this.myShip = ship;
+
         myShip.init();
         initPhotons();
-        initMissile();
-
-        myGameData.setHyperCounter(0);
-
-        initUfo();
+        stopUfo();
+        stopMissile();
         initAsteroids();
         initExplosions();
         playing = true;
         paused = false;
         myGameData.setPhotonTime(System.currentTimeMillis());
+
     }
 
     public void updateGame(int direction) {
