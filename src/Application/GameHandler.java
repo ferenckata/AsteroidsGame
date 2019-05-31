@@ -140,6 +140,8 @@ public class GameHandler implements OnGameListener {
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
+            myGame.updateAsteroids();
+            //myGame.updateGame(direction);
             myGame.evaluateHighScore();
             myGame.rewardShip();
             myGame.getUFO();

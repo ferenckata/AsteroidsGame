@@ -84,6 +84,8 @@ public class GameScreen extends JPanel {
     }
 
     public void update(Graphics g) {
+        System.out.println("inUpdateGameScreen");
+
         paint(g);
     }
 
@@ -95,6 +97,8 @@ public class GameScreen extends JPanel {
         String s;
         int w, h;
         int x, y;
+
+        System.out.println("InPaint");
 
         // Create the off screen graphics context, if no good one exists.
 

@@ -38,7 +38,6 @@ public class Game {
 
     private Ship myShip;
     private UFO myUfo;
-    private Photon[] myPhotons;
     private Asteroid[] myAsteroids;
     private Explosion[] myExplosions;
     private GameData myGameData;
@@ -52,9 +51,6 @@ public class Game {
         this.setDetail(detail);
         this.gameSound = Sound.getInstance();
         myGameProperties = GameProperties.getInstance();
-        myPhotons = new Photon[myGameProperties.getMaxShots()];
-        myAsteroids = new Asteroid[myGameProperties.getMaxRocks()];
-        myExplosions = new Explosion[myGameProperties.getMaxScrap()];
         this.myOnGameListener = myOnGameListener;
 
     }
@@ -205,14 +201,6 @@ public class Game {
         this.myUfo = myUfo;
     }
 
-    public Photon[] getMyPhotons() {
-        return myPhotons;
-    }
-
-    public void setMyPhotons(Photon[] myPhotons) {
-        this.myPhotons = myPhotons;
-    }
-
     public Asteroid[] getMyAsteroids() {
         return myAsteroids;
     }
@@ -251,8 +239,14 @@ public class Game {
         myGameData.setNewShipScore(myGameProperties.getNewShipPoints());
         myGameData.setNewUfoScore(myGameProperties.getNewUfoPoints());
 
+        this.myUfo = ufo;
+        this.myAsteroids = asteroids;
+        this.myExplosions = explosions;
+
         this.myShip = ship;
         myShip.init();
+        initPhotons();
+        initMissile();
 
         myGameData.setHyperCounter(0);
 
@@ -276,7 +270,7 @@ public class Game {
 
 
         updateUfo();
-
+        updateMissile();
         updateAsteroids();
         updateExplosions();
         updatePhotons();
@@ -311,8 +305,9 @@ public class Game {
         myUfo.initMissile();
 
         myGameData.setMissileCounter(MISSILE_COUNT);
-        myOnGameListener.onSoundAction("Missile");
-
+        if (this.isPlaying()){
+            myOnGameListener.onSoundAction("Missile");
+        }
 
     }
 
@@ -374,7 +369,7 @@ public class Game {
 
 
     public void initPhotons() {
-        for (Photon photon: myPhotons) {
+        for (Photon photon: myShip.getMyPhotons()) {
             photon.init();
             photoIndex = 0;
         }
@@ -446,7 +441,7 @@ public class Game {
             if (myUfo.isActive()) {
                 myUfo.advance();
                 myUfo.render();
-                for (Photon photon: myPhotons) {
+                for (Photon photon: myShip.getMyPhotons()) {
                     if (photon.isActive() && myUfo.isColliding(photon)) {
                         if (sound) {
                             // ToDo: myOnGameListener should take over
@@ -504,7 +499,7 @@ public class Game {
                 // If hit by photon, kill asteroid and advance score. If asteroid is
                 // large, make some smaller ones to replace it.
 
-                Photon[] photons = getMyPhotons();
+                Photon[] photons = myShip.getMyPhotons();
                 for (int j = 0; j < myGameProperties.getMAX_SHOTS(); j++)
                     if (photons[j].isActive() && asteroid.isActive() && asteroid.isColliding(photons[j])) {
                         int asteroidsLeft = myGameData.getAsteroidsLeft();
@@ -534,7 +529,7 @@ public class Game {
 
         // Move any isActive photons. Stop it when its counter has expired.
 
-        for (Photon photon : myPhotons){
+        for (Photon photon : myShip.getMyPhotons()){
             if (photon.isActive()) {
                 if (!photon.advance())
                     photon.render();
@@ -545,7 +540,7 @@ public class Game {
 
     }
 
-    public void updateMissle() {
+    public void updateMissile() {
 
         // Move the guided missle and check for collision with ship or photon. Stop
         // it when its counter has expired.
@@ -559,7 +554,7 @@ public class Game {
                 guideMissle();
                 myUfo.getMyMissile().advance();
                 myUfo.getMyMissile().render();
-                for (Photon photon: myPhotons) {
+                for (Photon photon: myShip.getMyPhotons()) {
                     if (photon.isActive() && myUfo.getMyMissile().isColliding(photon)) {
                         myOnGameListener.onSoundAction("Crash");
                         explode(myUfo.getMyMissile());

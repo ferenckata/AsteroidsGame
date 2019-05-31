@@ -1,10 +1,13 @@
 package src.Tech;
 
 import src.Application.GameHandler;
+import src.Domain.GameObjects.*;
+import src.Main;
 import src.UI.GameScreen;
 import src.UI.InputOutput;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -16,8 +19,8 @@ public class Runner implements Runnable{
     // Thread control variables.
     private Thread loadThread;
     private Thread loopThread;
-    private GameHandler myGameHandler = GameHandler.getInstance();
     private GameScreen myGameScreen = GameScreen.getInstance();
+    private GameHandler myGameHandler = GameHandler.getInstance();
     private InputOutput myInputOutput = InputOutput.getInstance();
 
     private Runner(){
@@ -32,7 +35,9 @@ public class Runner implements Runnable{
 
     public void init (){
         //Creators
+
         myGameScreen.setUpScreen();
+
         myInputOutput.setUpIO();
 
         // Create shape for the ship sprite. Including: // Create shapes for the ship thrusters.
@@ -54,6 +59,7 @@ public class Runner implements Runnable{
 
     public void start() {
 
+
         if (loopThread == null) {
             loopThread = new Thread(this);
             loopThread.start();
@@ -63,7 +69,9 @@ public class Runner implements Runnable{
             loadThread = new Thread(this);
             loadThread.start();
         }
+
     }
+
 
     public void stop() {
 
@@ -86,6 +94,7 @@ public class Runner implements Runnable{
             loadThread = null;
         }
     }
+
 
     @Override
     public void run() {
@@ -112,14 +121,17 @@ public class Runner implements Runnable{
 
         // This is the main loop.
 
-        while (Thread.currentThread() == loopThread) {
+            while (Thread.currentThread() == loopThread) {
+                if (!myGameHandler.isGamePaused()){
+                    System.out.println("BEFORE UPDATEGAME");
+                    myGameHandler.updateGame();
+                }
 
-            myGameHandler.updateGame();
 
-            // Update the screen and set the timer for the next loop.
+                System.out.println("BEFORE REPAINT");
 
-            //myStartScreen.repaint();
-            myGameScreen.repaint();
+                //working version -> repaint();
+                myGameScreen.repaint();
             try {
                 startTime += DELAY;
                 Thread.sleep(Math.max(0, startTime - System.currentTimeMillis()));
@@ -133,7 +145,6 @@ public class Runner implements Runnable{
     private void setUpMainFrame(){
         JFrame mainFrame = new JFrame("src.Main Game");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //mainFrame.add(myStartScreen);
         mainFrame.add(myGameScreen);
         mainFrame.setSize(1200,800);
         mainFrame.setLayout(null);
@@ -141,15 +152,11 @@ public class Runner implements Runnable{
 
         mainFrame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                //myStartScreen.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
-                //myStartScreen.setSize(e.getComponent().getWidth(), e.getComponent().getHeight());
-                //myBackground.setWidth(e.getComponent().getWidth());
-                //myBackground.setHeight(e.getComponent().getHeight());
-                //myStartScreen.repaint();
 
                 myGameScreen.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
                 myGameScreen.setSize(e.getComponent().getWidth(), e.getComponent().getHeight());
                 myGameScreen.setUpBackGround(e.getComponent().getWidth(),e.getComponent().getHeight());
+                System.out.println("BeforeRepaintComponent");
                 myGameScreen.repaint();
             }
         });
