@@ -274,7 +274,6 @@ public class Game {
         moveShip(direction);
         updateShip();
 
-
         updateUfo();
 
         updateAsteroids();
@@ -738,4 +737,5 @@ public class Game {
         myShip.setX(Math.random() * screenWidth);
         myShip.setY(Math.random() * screenHeight);
     }
+
 }
