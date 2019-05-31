@@ -1,13 +1,11 @@
 package src.Tech;
 
 import src.Application.GameHandler;
-import src.Domain.GameObjects.*;
-import src.Main;
+
 import src.UI.GameScreen;
 import src.UI.InputOutput;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -36,9 +34,8 @@ public class Runner implements Runnable{
     public void init (){
         //Creators
 
-        myGameScreen.setUpScreen();
-
         myInputOutput.setUpIO();
+        myGameScreen.setUpScreen();
 
         // Create shape for the ship sprite. Including: // Create shapes for the ship thrusters.
         // Create shape for the flying saucer.

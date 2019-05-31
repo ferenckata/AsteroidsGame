@@ -24,7 +24,10 @@ public class GameHandler implements OnGameListener {
     private Asteroid[] myAsteroids;
     private Explosion[] myExplosions;
 
+    private int direction;
+
     private GameHandler() {
+        direction = 0;
         System.out.println("GameHandler");
     }
 
@@ -137,6 +140,8 @@ public class GameHandler implements OnGameListener {
     public void updateGame() {
         if (!myGame.isPaused()) {
 
+            myGame.updateGame(direction);
+
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
@@ -162,25 +167,32 @@ public class GameHandler implements OnGameListener {
         if (keyEvent.isActionKey()) {
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.VK_UP:
-                    myGame.updateGame(1);
+                    direction = 1;
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()) {
                         if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.loopThrustersSound();
                         }
                     }
+                    break;
                 case KeyEvent.VK_DOWN:
-                    myGame.updateGame(2);
+                    direction = 2;
+                    myGame.updateGame(direction);
                     if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()) {
                         if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.loopThrustersSound();
                         }
                     }
+                    break;
                 case KeyEvent.VK_RIGHT:
-                    myGame.updateGame(4);
+                    direction = 4;
+                    break;
                 case KeyEvent.VK_LEFT:
-                    myGame.updateGame(3);
+                    direction = 3;
+                    break;
 
             }
+            myGame.updateGame(direction);
+
         } else {
             char keyChar = Character.toLowerCase(keyEvent.getKeyChar());
             switch (keyChar) {
