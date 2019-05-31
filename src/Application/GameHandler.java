@@ -75,7 +75,8 @@ public class GameHandler implements OnGameListener{
             myGameSound.stopThrustersSound();
             myGameSound.setThrustersPlaying(false);
         }
-        myGame.endGame();
+        // ToDo: move end game to its appropriate position
+//        myGame.endGame();
 
     }
 
@@ -93,7 +94,6 @@ public class GameHandler implements OnGameListener{
             myGameSound.loadSound("Saucer");
             myGameSound.loadSound("Thrusters");
             myGameSound.loadSound("Warp");
-            isSoundLoaded = true;
         } catch (Exception e) {
             System.out.println("Could not load sounds");
         }
@@ -127,7 +127,6 @@ public class GameHandler implements OnGameListener{
             myGameScreen.repaint();
             Thread.sleep(delay);
 
-            isSoundLoaded = true;
         }
         catch (InterruptedException e) {
             System.out.println("Could not run sounds");
@@ -137,7 +136,7 @@ public class GameHandler implements OnGameListener{
 
     public void updateGame() {
         if (!myGame.isPaused()) {
-            
+
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
@@ -371,7 +370,6 @@ public class GameHandler implements OnGameListener{
                 myGameSound.startExplosionSound(isSoundActive());
             case "Crash" :
                 myGameSound.startCrashSound(isSoundActive());
-
             case "Saucer" :
                 myGameSound.stopSound("Saucer");
             case "StopMissile" :

@@ -416,7 +416,6 @@ public class Game {
                     myGameData.setHyperCounter(HYPER_COUNT);
                 }
                 else{
-                    //ToDo: can game end itself??
                     endGame();
                 }
 
