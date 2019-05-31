@@ -26,9 +26,6 @@ public class Main{
     {
         Runner runner = Runner.getInstance();
 
-        // Display copyright information.
-
-        System.out.println(getAppletInfo());
         runner.init();
     }
 }

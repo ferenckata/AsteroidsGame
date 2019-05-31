@@ -46,7 +46,7 @@ public class GameHandler implements OnGameListener {
     public void createGameObjects() {
         myUFO = myShapeFactory.createUFO(myGameScreen.getMaxRockSpeed(), myGameProperties.getUfoPoints(), myGameProperties.getMaxShots(), myGameScreen.getMissileProbability());
         myShip = myShapeFactory.createShip(myGameProperties.getMAX_SHOTS(), myGameScreen.getMaxRockSpeed());
-        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(), myGameProperties.getMinRockSides(), myGameProperties.getMaxRockSides(), myGameProperties.getMinRockSize(), myGameProperties.getMaxRockSize(), myGameScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(), myGameProperties.getMinRockSides(), myGameProperties.getMaxRockSides(), myGameProperties.getMinRockSize(), myGameProperties.getMaxRockSize(), myGameScreen.getMaxRockSpin(), myGameScreen.getMinRockSpeed());
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
     }
 
@@ -63,6 +63,7 @@ public class GameHandler implements OnGameListener {
         myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
         myGame.setHYPER_COUNT(myGameScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myGameScreen.getMaxRockSpeed());
+        myGame.setMIN_ROCK_SPEED(myGameScreen.getMinRockSpeed());
         myGame.setMAX_ROCK_SPIN(myGameScreen.getMaxRockSpin());
         myGame.setMaxRockSpeedTimesFPSPer2(myGameScreen.getMaxRockSpeedTimesFPSPer2());
         myGame.setMISSILE_COUNT(myGameScreen.getMissileCount());
@@ -76,7 +77,6 @@ public class GameHandler implements OnGameListener {
             myGameSound.setThrustersPlaying(false);
         }
 
-        myGame.initObjects();
         myGame.endGame();
 
     }

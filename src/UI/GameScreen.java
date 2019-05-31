@@ -3,13 +3,14 @@ package src.UI;
 import src.Application.GameHandler;
 import src.Domain.Game;
 import src.Domain.GameObjects.*;
+import src.Main;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameScreen extends JPanel {
 
-    private  String copyName = "src.Asteroids";
+    private  String copyName = "src.Main";
     private  String copyVers = "Version 1.3";
     private  String copyInfo = "Copyright 1998-2001 by Mike Hall";
     private  String copyLink = "http://www.brainjar.com";
@@ -53,7 +54,7 @@ public class GameScreen extends JPanel {
 
     private GameScreen(){
         System.out.println("GAMESCREEN");
-        this.myBackground = new Background();
+        this.myBackground = Background.getMyInstance();
     }
 
     public static GameScreen getInstance(){
@@ -65,7 +66,14 @@ public class GameScreen extends JPanel {
 
     public void setUpScreen(){
 
+        setBounds(0,0,1200,800);
         Dimension d = getSize();
+
+        //ToDo: this was moved from Main, remove if unnecessary here
+        // Display copyright information.
+        System.out.println(Main.getAppletInfo());
+
+        setFocusable(true);
 
         // Set the screen size.
         myBackground.setWidth(d.width);
@@ -73,8 +81,6 @@ public class GameScreen extends JPanel {
 
         // Generate the starry background.
         myBackground.setUpStars();
-        setBounds(0,0,1200,800);
-        setFocusable(true);
 
     }
 
@@ -335,6 +341,5 @@ public class GameScreen extends JPanel {
     }
 
     public double getMaxRockSpeedTimesFPSPer2(){ return MAX_ROCK_SPEED * FPS / 2;}
-
 
 }

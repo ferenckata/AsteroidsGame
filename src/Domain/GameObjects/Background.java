@@ -12,10 +12,20 @@ public class Background {
     private int     numStars;
     private Point[] stars;
 
+    private static Background myInstance;
+
+    private Background(){
+
+    }
+
     // getters and setters
 
-    public Background(){
 
+    public static Background getMyInstance() {
+        if(myInstance==null){
+            myInstance = new Background();
+        }
+        return myInstance;
     }
 
     public int getWidth() {

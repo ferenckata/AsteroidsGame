@@ -9,7 +9,7 @@ public class ShapeFactory {
     private Background myBackground;
 
     private ShapeFactory(){
-        this.myBackground = new Background();
+        this.myBackground = Background.getMyInstance();
     }
 
     public static ShapeFactory getInstance(){

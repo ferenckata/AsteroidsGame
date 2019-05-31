@@ -256,8 +256,7 @@ public class Game {
 
         myGameData.setHyperCounter(0);
 
-        //stopUfo();
-        //stopMissile();
+        initUfo();
         initAsteroids();
         initExplosions();
         playing = true;
@@ -303,7 +302,7 @@ public class Game {
 
         myUfo.init();
         // ToDo: myOnGameListener should take over
-        gameSound.initUfoSound(sound);
+        gameSound.initUfoSound(playing);
         myGameData.setUfoCounter(myUfo.getCounter());
     }
 
@@ -738,12 +737,5 @@ public class Game {
     public void hyperSpaceShip(int screenWidth, int screenHeight) {
         myShip.setX(Math.random() * screenWidth);
         myShip.setY(Math.random() * screenHeight);
-    }
-
-    public void initObjects() {
-        myShip.init();
-        myUfo.init();
-        initAsteroids();
-        initExplosions();
     }
 }
