@@ -63,7 +63,7 @@ public class GameHandler implements OnGameListener {
         myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
         myGame.setHYPER_COUNT(myGameScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myGameScreen.getMaxRockSpeed());
-        myGame.setMIN_ROCK_SPEED(myGameScreen.getMinRockSpeed());
+        myGame.setMIN_ROCK_SPEED(myGameScreen.getMinRockSpeed()); // ToDo: for some reason here the minRockSpeed turns into 0
         myGame.setMAX_ROCK_SPIN(myGameScreen.getMaxRockSpin());
         myGame.setMaxRockSpeedTimesFPSPer2(myGameScreen.getMaxRockSpeedTimesFPSPer2());
         myGame.setMISSILE_COUNT(myGameScreen.getMissileCount());

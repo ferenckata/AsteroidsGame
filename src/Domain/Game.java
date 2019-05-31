@@ -245,7 +245,7 @@ public class Game {
 
         myGameData.setScore(0);
 
-        myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED);
+        myGameData.setAsteroidsSpeed(MIN_ROCK_SPEED); // ToDo: speed should be different
         myGameData.setShipsLeft(myGameProperties.getMAX_SHIPS());
 
         myGameData.setNewShipScore(myGameProperties.getNewShipPoints());
