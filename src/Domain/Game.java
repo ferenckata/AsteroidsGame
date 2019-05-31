@@ -302,6 +302,7 @@ public class Game {
         // Randomly set flying saucer at left or right edge of the screen.
 
         myUfo.init();
+        // ToDo: myOnGameListener should take over
         gameSound.initUfoSound(sound);
         myGameData.setUfoCounter(myUfo.getCounter());
     }
@@ -450,6 +451,7 @@ public class Game {
                 for (Photon photon: myPhotons) {
                     if (photon.isActive() && myUfo.isColliding(photon)) {
                         if (sound) {
+                            // ToDo: myOnGameListener should take over
                             gameSound.initCrashSound();
                         }
                         explode(myUfo);

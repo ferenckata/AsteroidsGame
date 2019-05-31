@@ -56,7 +56,7 @@ public class GameHandler implements OnGameListener{
         boolean sound = true;
         boolean detail = true;
 
-        myGame = myGameFactory.createGame(highScore,sound,detail,this);
+        myGame = myGameFactory.createGame(highScore,sound,detail,this,myAsteroids,myExplosions,myUFO);
         myGameSound = myGameFactory.createGameSound();
 
 
@@ -69,7 +69,6 @@ public class GameHandler implements OnGameListener{
         myGame.setSCRAP_COUNT(myGameScreen.getScrapCount());
         myGame.setMISSILE_PROBABILITY(myGameScreen.getMissileProbability());
         myGame.setSTORM_PAUSE(myGameScreen.getStormPause());
-
 
 
         if (isSoundLoaded){
@@ -94,6 +93,7 @@ public class GameHandler implements OnGameListener{
             myGameSound.loadSound("Saucer");
             myGameSound.loadSound("Thrusters");
             myGameSound.loadSound("Warp");
+            isSoundLoaded = true;
         } catch (Exception e) {
             System.out.println("Could not load sounds");
         }
@@ -126,6 +126,8 @@ public class GameHandler implements OnGameListener{
             myGameSound.runSound("Warp");
             myGameScreen.repaint();
             Thread.sleep(delay);
+
+            isSoundLoaded = true;
         }
         catch (InterruptedException e) {
             System.out.println("Could not run sounds");
@@ -135,7 +137,7 @@ public class GameHandler implements OnGameListener{
 
     public void updateGame() {
         if (!myGame.isPaused()) {
-
+            
             // Check the score and advance high score, add a new ship or start the
             // flying saucer as necessary.
 
