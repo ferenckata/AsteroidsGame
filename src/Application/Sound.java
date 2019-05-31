@@ -4,7 +4,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.awt.datatransfer.ClipboardOwner;
 import java.io.File;
 import java.io.IOException;
 
@@ -47,24 +46,39 @@ public class Sound {
             case "Crash" :
                 crashSound = audioClip;
                 crashSound.open(AudioSystem.getAudioInputStream(new File("sounds/crash.wav")));
+
+                break;
+
             case "Explosion" :
                 explosionSound = audioClip;
                 explosionSound.open(AudioSystem.getAudioInputStream(new File("sounds/explosion.wav")));
+                break;
+
             case "Fire" :
                 fireSound = audioClip;
                 fireSound.open(AudioSystem.getAudioInputStream(new File("sounds/fire.wav")));
+                break;
+
             case "Missile" :
                 missileSound = audioClip;
                 missileSound.open(AudioSystem.getAudioInputStream(new File("sounds/missile.wav")));
+                break;
+
             case "Saucer" :
                 saucerSound = audioClip;
                 saucerSound.open(AudioSystem.getAudioInputStream(new File("sounds/saucer.wav")));
+                break;
+
             case "Thrusters" :
                 thrustersSound = audioClip;
                 thrustersSound.open(AudioSystem.getAudioInputStream(new File("sounds/thrusters.wav")));
+                break;
+
             case "Warp" :
                 warpSound = audioClip;
                 warpSound.open(AudioSystem.getAudioInputStream(new File("sounds/warp.wav")));
+                break;
+
         }
         clipTotal++;
     }
@@ -74,24 +88,38 @@ public class Sound {
             case "Crash" :
                 crashSound.start();
                 crashSound.stop();
+                break;
+
             case "Explosion" :
                 explosionSound.start();
                 explosionSound.stop();
+                break;
+
             case "Fire" :
                 fireSound.start();
                 fireSound.stop();
+                break;
+
             case "Missile" :
                 missileSound.start();
                 missileSound.stop();
+                break;
+
             case "Saucer" :
                 saucerSound.start();
                 saucerSound.stop();
+                break;
+
             case "Thrusters" :
                 thrustersSound.start();
                 thrustersSound.stop();
+                break;
+
             case "Warp" :
                 warpSound.start();
                 warpSound.stop();
+                break;
+
         }
         clipsLoaded++;
 
@@ -246,21 +274,34 @@ public class Sound {
         switch (sound) {
             case "Crash" :
                 crashSound.stop();
+                break;
             case "Explosion" :
                 explosionSound.stop();
+                break;
+
             case "Fire" :
                 fireSound.stop();
+                break;
+
             case "Missile" :
                 missileSound.stop();
                 missilePlaying = false;
+                break;
+
             case "Saucer" :
                 saucerSound.stop();
                 saucerPlaying = false;
+                break;
+
             case "Thrusters" :
                 thrustersSound.stop();
                 thrustersPlaying = false;
+                break;
+
             case "Warp" :
                 warpSound.stop();
+                break;
+
             case "AllSounds" :
                 stopSound("Crash");
                 stopSound("Explosion");
@@ -269,6 +310,8 @@ public class Sound {
                 stopSound("Saucer");
                 stopSound("Thrusters");
                 stopSound("Warp");
+                break;
+
         }
     }
 

@@ -366,14 +366,24 @@ public class GameHandler implements OnGameListener {
         switch (soundAction) {
             case "Missile":
                 myGameSound.loopMissileSound();
+                break;
+
             case "Explosion":
                 myGameSound.startExplosionSound(isSoundActive());
+                break;
+
             case "Crash":
                 myGameSound.startCrashSound(isSoundActive());
+                break;
+
             case "Saucer":
                 myGameSound.stopSound("Saucer");
+                break;
+
             case "StopMissile":
                 myGameSound.stopSound("Missile");
+                break;
+
         }
 
 

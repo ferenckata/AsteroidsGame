@@ -1,7 +1,6 @@
 package src.UI;
 
 import src.Application.GameHandler;
-import src.Domain.Game;
 import src.Domain.GameObjects.*;
 import src.Main;
 
