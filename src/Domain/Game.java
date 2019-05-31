@@ -593,7 +593,9 @@ public class Game {
         myUfo.stop();
         myGameData.setUfoCounter(0);
         myGameData.setUfoPassesLeft(0);
-        myOnGameListener.onSoundAction("Saucer");
+        if(playing){
+            myOnGameListener.onSoundAction("Saucer");
+        }
 
     }
 
@@ -601,7 +603,9 @@ public class Game {
     public void stopMissile() {
         myUfo.getMyMissile().stop();
         myGameData.setMissileCounter(0);
-        myOnGameListener.onSoundAction("StopMissile");
+        if(playing){
+            myOnGameListener.onSoundAction("StopMissile");
+        }
     }
 
 
@@ -734,5 +738,12 @@ public class Game {
     public void hyperSpaceShip(int screenWidth, int screenHeight) {
         myShip.setX(Math.random() * screenWidth);
         myShip.setY(Math.random() * screenHeight);
+    }
+
+    public void initObjects() {
+        myShip.init();
+        myUfo.init();
+        initAsteroids();
+        initExplosions();
     }
 }

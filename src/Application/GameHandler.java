@@ -7,7 +7,7 @@ import src.UI.GameScreen;
 import src.UI.InputOutput;
 import java.awt.event.KeyEvent;
 
-public class GameHandler implements OnGameListener{
+public class GameHandler implements OnGameListener {
 
     private boolean isSoundLoaded = false;
     private ShapeFactory myShapeFactory = ShapeFactory.getInstance();
@@ -24,12 +24,12 @@ public class GameHandler implements OnGameListener{
     private Asteroid[] myAsteroids;
     private Explosion[] myExplosions;
 
-    private GameHandler(){
+    private GameHandler() {
         System.out.println("GameHandler");
     }
 
     public static GameHandler getInstance() {
-        if (myInstance == null){
+        if (myInstance == null) {
             myInstance = new GameHandler();
         }
         return myInstance;
@@ -43,10 +43,10 @@ public class GameHandler implements OnGameListener{
         this.isSoundLoaded = soundLoaded;
     }
 
-    public void createGameObjects(){
-        myUFO = myShapeFactory.createUFO(myGameScreen.getMaxRockSpeed(),myGameProperties.getUfoPoints(),myGameProperties.getMaxShots(), myGameScreen.getMissileProbability());
+    public void createGameObjects() {
+        myUFO = myShapeFactory.createUFO(myGameScreen.getMaxRockSpeed(), myGameProperties.getUfoPoints(), myGameProperties.getMaxShots(), myGameScreen.getMissileProbability());
         myShip = myShapeFactory.createShip(myGameProperties.getMAX_SHOTS(), myGameScreen.getMaxRockSpeed());
-        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(),myGameProperties.getMinRockSides(),myGameProperties.getMaxRockSides(),myGameProperties.getMinRockSize(),myGameProperties.getMaxRockSize(), myGameScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
+        myAsteroids = myShapeFactory.createAsteroids(myGameProperties.getMaxRocks(), myGameProperties.getMinRockSides(), myGameProperties.getMaxRockSides(), myGameProperties.getMinRockSize(), myGameProperties.getMaxRockSize(), myGameScreen.getMaxRockSpin(), myGameData.getAsteroidsSpeed());
         myExplosions = myShapeFactory.createExplosions(myGameProperties.getMaxScrap());
     }
 
@@ -56,11 +56,11 @@ public class GameHandler implements OnGameListener{
         boolean sound = true;
         boolean detail = true;
 
-        myGame = myGameFactory.createGame(highScore,sound,detail,this,myAsteroids,myExplosions,myUFO);
+        myGame = myGameFactory.createGame(highScore, sound, detail, this, myAsteroids, myExplosions, myUFO);
         myGameSound = myGameFactory.createGameSound();
 
 
-        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
+        myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
         myGame.setHYPER_COUNT(myGameScreen.getHyperCount());
         myGame.setMAX_ROCK_SPEED(myGameScreen.getMaxRockSpeed());
         myGame.setMAX_ROCK_SPIN(myGameScreen.getMaxRockSpin());
@@ -71,12 +71,13 @@ public class GameHandler implements OnGameListener{
         myGame.setSTORM_PAUSE(myGameScreen.getStormPause());
 
 
-        if (isSoundLoaded){
+        if (isSoundLoaded) {
             myGameSound.stopThrustersSound();
             myGameSound.setThrustersPlaying(false);
         }
-        // ToDo: move end game to its appropriate position
-//        myGame.endGame();
+
+        myGame.initObjects();
+        myGame.endGame();
 
     }
 
@@ -127,8 +128,7 @@ public class GameHandler implements OnGameListener{
             myGameScreen.repaint();
             Thread.sleep(delay);
 
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             System.out.println("Could not run sounds");
         }
 
@@ -145,9 +145,9 @@ public class GameHandler implements OnGameListener{
             myGame.getUFO();
 
             // If all myAsteroids have been destroyed create a new batch.
-            if (myGameData.getAsteroidsLeft() <= 0){
+            if (myGameData.getAsteroidsLeft() <= 0) {
                 int asteroidsCounter = myGameData.getAsteroidsCounter();
-                if (-- asteroidsCounter <= 0){
+                if (--asteroidsCounter <= 0) {
                     myGame.initAsteroids();
                 }
             }
@@ -157,111 +157,111 @@ public class GameHandler implements OnGameListener{
 
     public void actOnKeyPressed(KeyEvent keyEvent) {
 
-        if (keyEvent.isActionKey()){
-            switch (keyEvent.getKeyCode()){
-                case KeyEvent.VK_UP :
+        if (keyEvent.isActionKey()) {
+            switch (keyEvent.getKeyCode()) {
+                case KeyEvent.VK_UP:
                     myGame.updateGame(1);
-                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
-                        if (myGame.isSound() && !myGame.isPaused()){
+                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()) {
+                        if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.loopThrustersSound();
                         }
                     }
-                case KeyEvent.VK_DOWN :
+                case KeyEvent.VK_DOWN:
                     myGame.updateGame(2);
-                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()){
-                        if (myGame.isSound() && !myGame.isPaused()){
+                    if (myGame.getMyShip().isActive() && !myGameSound.isThrustersPlaying()) {
+                        if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.loopThrustersSound();
                         }
                     }
-                case KeyEvent.VK_RIGHT :
+                case KeyEvent.VK_RIGHT:
                     myGame.updateGame(4);
-                case KeyEvent.VK_LEFT :
+                case KeyEvent.VK_LEFT:
                     myGame.updateGame(3);
 
             }
         } else {
             char keyChar = Character.toLowerCase(keyEvent.getKeyChar());
             switch (keyChar) {
-                case ' ' :
-                    if (myGame.getMyShip().isActive()){
-                        if (myGame.isSound() && !myGame.isPaused()){
+                case ' ':
+                    if (myGame.getMyShip().isActive()) {
+                        if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.startFireSound();
                         }
                         myGameData.setPhotonTime(System.currentTimeMillis());
-                        myGameData.setPhotonIndex(myGameData.getPhotonIndex()+1);
-                        if (myGameData.getPhotonIndex() >= myGameProperties.getMaxShots()){
+                        myGameData.setPhotonIndex(myGameData.getPhotonIndex() + 1);
+                        if (myGameData.getPhotonIndex() >= myGameProperties.getMaxShots()) {
                             myGameData.setPhotonIndex(0);
                         }
                         myGame.shipFire(myGameData.getPhotonIndex());
                     }
-                case 'h' :
-                    if (myGame.getMyShip().isActive() && myGameData.getHyperCounter() <= 0){
+                case 'h':
+                    if (myGame.getMyShip().isActive() && myGameData.getHyperCounter() <= 0) {
                         int screenWidth = myGameScreen.getWidth();
                         int screenHeight = myGameScreen.getHeight();
-                        myGame.hyperSpaceShip(screenWidth,screenHeight);
+                        myGame.hyperSpaceShip(screenWidth, screenHeight);
                         myGameData.setHyperCounter(myGameScreen.getHyperCount());
-                        if (myGame.isSound() && !myGame.isPaused()){
+                        if (myGame.isSound() && !myGame.isPaused()) {
                             myGameSound.startWarpSound();
                         }
                     }
 
-                case 'p' :
-                    if (myGame.isPaused()){
-                        if (myGame.isSound()){
-                            if (myGameSound.isMissilePlaying()){
+                case 'p':
+                    if (myGame.isPaused()) {
+                        if (myGame.isSound()) {
+                            if (myGameSound.isMissilePlaying()) {
                                 myGameSound.loopMissileSound();
                             }
-                            if (myGameSound.isSaucerPlaying()){
+                            if (myGameSound.isSaucerPlaying()) {
                                 myGameSound.loopSaucerSound();
                             }
-                            if (myGameSound.isThrustersPlaying()){
+                            if (myGameSound.isThrustersPlaying()) {
                                 myGameSound.loopThrustersSound();
                             }
                         }
                         myGame.setPaused(false);
                     } else {
-                        if (myGameSound.isMissilePlaying()){
+                        if (myGameSound.isMissilePlaying()) {
                             myGameSound.stopSound("Missile");
                         }
-                        if (myGameSound.isMissilePlaying()){
+                        if (myGameSound.isMissilePlaying()) {
                             myGameSound.stopSound("Saucer");
                         }
-                        if (myGameSound.isThrustersPlaying()){
+                        if (myGameSound.isThrustersPlaying()) {
                             myGameSound.stopSound("Thrusters");
                         }
                         myGame.setPaused(true);
                     }
-                case 'm' :
-                    if (isSoundLoaded){
-                        if (myGame.isSound()){
+                case 'm':
+                    if (isSoundLoaded) {
+                        if (myGame.isSound()) {
                             myGameSound.stopSound("AllSounds");
                             myGame.setSound(false);
                         } else {
-                            if (myGameSound.isMissilePlaying() && !myGame.isPaused()){
+                            if (myGameSound.isMissilePlaying() && !myGame.isPaused()) {
                                 myGameSound.loopMissileSound();
                             }
-                            if (myGameSound.isSaucerPlaying() && !myGame.isPaused()){
+                            if (myGameSound.isSaucerPlaying() && !myGame.isPaused()) {
                                 myGameSound.loopSaucerSound();
                             }
-                            if (myGameSound.isThrustersPlaying() && !myGame.isPaused()){
+                            if (myGameSound.isThrustersPlaying() && !myGame.isPaused()) {
                                 myGameSound.loopMissileSound();
                             }
                             myGame.setSound(true);
                         }
                     }
 
-                case 'd' :
-                    if (myGame.isDetail()){
+                case 'd':
+                    if (myGame.isDetail()) {
                         myGame.setDetail(false);
                     } else {
                         myGame.setDetail(true);
                     }
-                case 's' :
-                    if (isSoundLoaded && !myGame.isPlaying()){
-                        myGame.initGame(myShip,myUFO,myAsteroids,myExplosions);
+                case 's':
+                    if (isSoundLoaded && !myGame.isPlaying()) {
+                        myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
                     }
-                case 'x' :
-                    if (isSoundLoaded){
+                case 'x':
+                    if (isSoundLoaded) {
                         myGame.endGame();
                     }
             }
@@ -320,7 +320,7 @@ public class GameHandler implements OnGameListener{
         return myShip.getFwdThruster();
     }
 
-    public Thruster getRevThruster(){
+    public Thruster getRevThruster() {
         return myShip.getRevThruster();
     }
 
@@ -364,15 +364,15 @@ public class GameHandler implements OnGameListener{
     public void onSoundAction(String soundAction) {
 
         switch (soundAction) {
-            case "Missile" :
+            case "Missile":
                 myGameSound.loopMissileSound();
-            case "Explosion" :
+            case "Explosion":
                 myGameSound.startExplosionSound(isSoundActive());
-            case "Crash" :
+            case "Crash":
                 myGameSound.startCrashSound(isSoundActive());
-            case "Saucer" :
+            case "Saucer":
                 myGameSound.stopSound("Saucer");
-            case "StopMissile" :
+            case "StopMissile":
                 myGameSound.stopSound("Missile");
         }
 
@@ -386,4 +386,5 @@ public class GameHandler implements OnGameListener{
     public int getLoadedClips() {
         return myGameSound.getClipsLoaded();
     }
+
 }
