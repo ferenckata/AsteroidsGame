@@ -97,7 +97,7 @@ public class GameHandler implements OnGameListener {
 
     public void loadSounds(int delay) {
 
-        boolean soundsLoaded = false;
+        this.isSoundLoaded = false;
         // Load all sound clips by playing and immediately stopping them. Update
         // counter and total for display.
 
@@ -109,12 +109,12 @@ public class GameHandler implements OnGameListener {
             myGameSound.loadSound("Saucer");
             myGameSound.loadSound("Thrusters");
             myGameSound.loadSound("Warp");
-            soundsLoaded = true;
+            isSoundLoaded = true;
         } catch (Exception e) {
             System.out.println("Could not load sounds");
         }
 
-        if(soundsLoaded){
+        if(isSoundLoaded){
             try {
                 myGameSound.runSound("Crash");
                 myGameScreen.repaint();
@@ -290,6 +290,7 @@ public class GameHandler implements OnGameListener {
                 case 's':
                     System.out.println("S pressed");
                     if (isSoundLoaded && !myGame.isPlaying()) {
+                        createGameObjects();
                         myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
                     }
                     break;
@@ -397,28 +398,31 @@ public class GameHandler implements OnGameListener {
     @Override
     public void onSoundAction(String soundAction) {
 
-        switch (soundAction) {
-            case "Missile":
-                myGameSound.loopMissileSound();
-                break;
+        if(isSoundLoaded){
+            switch (soundAction) {
+                case "Missile":
+                    myGameSound.loopMissileSound();
+                    break;
 
-            case "Explosion":
-                myGameSound.startExplosionSound(isSoundActive());
-                break;
+                case "Explosion":
+                    myGameSound.startExplosionSound(isSoundActive());
+                    break;
 
-            case "Crash":
-                myGameSound.startCrashSound(isSoundActive());
-                break;
+                case "Crash":
+                    myGameSound.startCrashSound(isSoundActive());
+                    break;
 
-            case "Saucer":
-                myGameSound.stopSound("Saucer");
-                break;
+                case "Saucer":
+                    myGameSound.stopSound("Saucer");
+                    break;
 
-            case "StopMissile":
-                myGameSound.stopSound("Missile");
-                break;
+                case "StopMissile":
+                    myGameSound.stopSound("Missile");
+                    break;
 
+            }
         }
+
 
 
     }

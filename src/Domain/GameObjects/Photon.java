@@ -24,7 +24,7 @@ public class Photon extends Sprite {
 
     }
     public void fire(double x, double y, double angle){
-        setActive(true);
+        isActive = true;
         setX(x);
         setY(y);
         deltaX = 2 * MAX_ROCK_SPEED * -Math.sin(angle);

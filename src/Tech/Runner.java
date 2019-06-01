@@ -108,7 +108,7 @@ public class Runner implements Runnable{
 
         if (!myGameHandler.isSoundLoaded() && Thread.currentThread() == loadThread) {
             myGameHandler.loadSounds(DELAY);
-            myGameHandler.setSoundLoaded(true);
+            myGameHandler.setSoundLoaded(true); // ToDo: this is to be removed, it is set inside loading sounds that knows if they're actually loaded
 
             try {
                 loadThread.join();
