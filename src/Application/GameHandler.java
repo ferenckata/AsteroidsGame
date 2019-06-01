@@ -284,8 +284,8 @@ public class GameHandler implements OnGameListener {
                     }
                     break;
                 case 's':
+                    System.out.println("S pressed");
                     if (isSoundLoaded && !myGame.isPlaying()) {
-                        System.out.println("S pressed");
                         myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
                     }
                     break;

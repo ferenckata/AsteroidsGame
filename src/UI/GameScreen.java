@@ -123,9 +123,10 @@ public class GameScreen extends JPanel {
 
         offGraphics.setColor(Color.white);
         Photon[] photons = myGameHandler.getPhotons();
-        for (i = 0; i < myGameHandler.getMaxShots(); i++)
+        for (i = 0; i < photons.length; i++){
             if (photons[i].isActive())
                 offGraphics.drawPolygon(photons[i].getSprite());
+        }
 
         // Draw the guided missle, counter is used to quickly fade color to black
         // when near expiration.
@@ -142,7 +143,7 @@ public class GameScreen extends JPanel {
         // Draw the asteroids.
 
         Asteroid[] asteroids = myGameHandler.getAsteroids();
-        for (i = 0; i < myGameHandler.getMaxRocks(); i++)
+        for (i = 0; i < asteroids.length; i++){
             if (asteroids[i].isActive()) {
                 if (myGameHandler.isGameDetail()) {
                     offGraphics.setColor(Color.black);
@@ -153,6 +154,7 @@ public class GameScreen extends JPanel {
                 offGraphics.drawLine(asteroids[i].getSprite().xpoints[asteroids[i].getSprite().npoints - 1], asteroids[i].getSprite().ypoints[asteroids[i].getSprite().npoints - 1],
                         asteroids[i].getSprite().xpoints[0], asteroids[i].getSprite().ypoints[0]);
             }
+        }
 
         // Draw the flying saucer.
 
@@ -246,10 +248,11 @@ public class GameScreen extends JPanel {
                 offGraphics.setColor(Color.gray);
                 if (myGameHandler.getTotalClips() > 0) {
                     offGraphics.fillRect(x, y, (int) (w * myGameHandler.getLoadedClips() / myGameHandler.getTotalClips()), h);
-                    offGraphics.setColor(Color.white);
-                    offGraphics.drawRect(x, y, w, h);
-                    offGraphics.drawString(s, x + 2 * fontWidth, y + fm.getMaxAscent());
                 }
+                offGraphics.setColor(Color.white);
+                offGraphics.drawRect(x, y, w, h);
+                offGraphics.drawString(s, x + 2 * fontWidth, y + fm.getMaxAscent());
+
             } else {
                 s = "Game Over";
                 offGraphics.drawString(s, (d.width - fm.stringWidth(s)) / 2, d.height / 4);
