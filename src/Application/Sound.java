@@ -1,9 +1,6 @@
 package src.Application;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -45,13 +42,16 @@ public class Sound {
         switch (clip) {
             case "Crash" :
                 crashSound = audioClip;
-                crashSound.open(AudioSystem.getAudioInputStream(new File("sounds/crash.wav")));
-
+                File file = new File("sounds/crash.wav");
+                System.out.println(file.exists());
+                crashSound.open(AudioSystem.getAudioInputStream(file));
                 break;
 
             case "Explosion" :
                 explosionSound = audioClip;
-                explosionSound.open(AudioSystem.getAudioInputStream(new File("sounds/explosion.wav")));
+                File file2 = new File("sounds/explosion.wav");
+                System.out.println(file2.exists());
+                explosionSound.open(AudioSystem.getAudioInputStream(file2));
                 break;
 
             case "Fire" :

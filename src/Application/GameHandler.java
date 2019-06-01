@@ -97,6 +97,7 @@ public class GameHandler implements OnGameListener {
 
     public void loadSounds(int delay) {
 
+        boolean soundsLoaded = false;
         // Load all sound clips by playing and immediately stopping them. Update
         // counter and total for display.
 
@@ -108,41 +109,44 @@ public class GameHandler implements OnGameListener {
             myGameSound.loadSound("Saucer");
             myGameSound.loadSound("Thrusters");
             myGameSound.loadSound("Warp");
+            soundsLoaded = true;
         } catch (Exception e) {
             System.out.println("Could not load sounds");
         }
 
-        try {
-            myGameSound.runSound("Crash");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+        if(soundsLoaded){
+            try {
+                myGameSound.runSound("Crash");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Explosion");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Explosion");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Fire");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Fire");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Missile");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Missile");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Saucer");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Saucer");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Thrusters");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Thrusters");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-            myGameSound.runSound("Warp");
-            myGameScreen.repaint();
-            Thread.sleep(delay);
+                myGameSound.runSound("Warp");
+                myGameScreen.repaint();
+                Thread.sleep(delay);
 
-        } catch (InterruptedException e) {
-            System.out.println("Could not run sounds");
+            } catch (InterruptedException e) {
+                System.out.println("Could not run sounds");
+            }
         }
 
     }
