@@ -218,6 +218,7 @@ public class GameHandler implements OnGameListener {
                         }
                         myGame.shipFire(myGameData.getPhotonIndex());
                     }
+                    break;
                 case 'h':
                     if (myGame.getMyShip().isActive() && myGameData.getHyperCounter() <= 0) {
                         int screenWidth = myGameScreen.getWidth();
@@ -228,7 +229,7 @@ public class GameHandler implements OnGameListener {
                             myGameSound.startWarpSound();
                         }
                     }
-
+                    break;
                 case 'p':
                     if (myGame.isPaused()) {
                         if (myGame.isSound()) {
@@ -255,6 +256,7 @@ public class GameHandler implements OnGameListener {
                         }
                         myGame.setPaused(true);
                     }
+                    break;
                 case 'm':
                     if (isSoundLoaded) {
                         if (myGame.isSound()) {
@@ -273,21 +275,25 @@ public class GameHandler implements OnGameListener {
                             myGame.setSound(true);
                         }
                     }
-
+                    break;
                 case 'd':
                     if (myGame.isDetail()) {
                         myGame.setDetail(false);
                     } else {
                         myGame.setDetail(true);
                     }
+                    break;
                 case 's':
                     if (isSoundLoaded && !myGame.isPlaying()) {
+                        System.out.println("S pressed");
                         myGame.initGame(myShip, myUFO, myAsteroids, myExplosions);
                     }
+                    break;
                 case 'x':
                     if (isSoundLoaded) {
                         myGame.endGame();
                     }
+                    break;
             }
         }
     }

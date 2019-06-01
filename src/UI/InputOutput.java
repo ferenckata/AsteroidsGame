@@ -44,6 +44,7 @@ public class InputOutput implements KeyListener {
     public void keyPressed(KeyEvent keyEvent) {
         GameHandler myGameHandler = GameHandler.getInstance();
         if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT){
+            System.out.println("left");
             setLeft(true);
         }
         if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT){
