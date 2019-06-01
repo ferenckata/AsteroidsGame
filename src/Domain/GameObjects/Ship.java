@@ -5,9 +5,9 @@ import src.Domain.GameProperties;
 
 public class Ship extends Sprite{
 
-    private static int MAX_SHIP_SPEED = 0;
-    private static int SHIP_SPEED_STEP = 0;
-    private static int SHIP_ANGLE_STEP = 0;
+    private static double MAX_SHIP_SPEED = 0;
+    private static double SHIP_SPEED_STEP = 0;
+    private static double SHIP_ANGLE_STEP = 0;
 
 
     private Thruster fwdThruster;
@@ -65,15 +65,15 @@ public class Ship extends Sprite{
         this.revThruster = revThruster;
     }
 
-    public static void setMaxShipSpeed(int MaxShipSpeed){
+    public static void setMaxShipSpeed(double MaxShipSpeed){
         MAX_SHIP_SPEED = MaxShipSpeed;
     }
 
-    public static void setShipSpeedStep(int ShipSpeedStep){
+    public static void setShipSpeedStep(double ShipSpeedStep){
         SHIP_SPEED_STEP = ShipSpeedStep;
     }
 
-    public static void setShipAngleStep(int ShipAngleStep){
+    public static void setShipAngleStep(double ShipAngleStep){
         SHIP_ANGLE_STEP = ShipAngleStep;
     }
 

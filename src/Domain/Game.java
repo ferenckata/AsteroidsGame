@@ -27,6 +27,9 @@ public class Game {
     private double MIN_ROCK_SPIN;
     private double MIN_ROCK_SPEED = GameScreen.getInstance().getMinRockSpeed();
 
+    private double SHIP_ANGLE_STEP = GameScreen.getInstance().getShipAngleStep();
+    private double SHIP_SPEED_STEP = GameScreen.getInstance().getShipSpeedStep();
+
     private int SCRAP_COUNT;
     private int MISSILE_COUNT;
     private int HYPER_COUNT;
@@ -244,6 +247,10 @@ public class Game {
         this.myExplosions = explosions;
         this.myShip = ship;
 
+        myShip.setMaxShipSpeed(1.25 * MAX_ROCK_SPEED);
+        myShip.setShipSpeedStep(SHIP_SPEED_STEP);
+        myShip.setShipAngleStep(SHIP_ANGLE_STEP);
+
         myShip.init();
         initPhotons();
         stopUfo();
@@ -262,6 +269,8 @@ public class Game {
         if (!playing){
             return;
         }
+
+        System.out.println(direction);
 
         moveShip(direction);
         updateShip();
